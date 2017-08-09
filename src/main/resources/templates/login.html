@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <title>Title</title>
-    <link rel="stylesheet" th:href="@{/static/css/uxcore/blue.min.css}" />
+    <meta charset="UTF-8"/>
+    <title>登录</title>
+    <!--<link rel="stylesheet" th:href="@{/static/css/uxcore/blue.min.css}" />-->
 </head>
 <body>
-<div id="components-button-demo-type"></div>
-<div id="components-button-demo-loading"></div>
-<div id="components-calendar-demo-basic"></div>
+<div id="login"></div>
+<script th:inline="javascript">
+    var csrf = [[${_csrf.token}]],
+        ctp = [[${#httpServletRequest.getContextPath()}]];
+</script>
 <script th:src="@{/static/build/bundle.js}"></script>
 </body>
 </html>

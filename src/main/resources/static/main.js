@@ -11,6 +11,7 @@ require('console-polyfill');
 require('es6-promise');
 require('fetch-ie8');
 
+
 /**
  * CANNOT use `import` to import `react` or `react-dom`,
  * because `import` will run `react` before `require('es5-shim')`.
@@ -26,4 +27,4 @@ const ReactDOM = require('react-dom');
  * self define components require field
  */
 
-
+require('./components/login');

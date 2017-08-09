@@ -1,3 +1,5 @@
+var webpack = require('webpack');
+
 module.exports = {
     entry: './src/main/resources/static/main.js',
     output: {
@@ -6,6 +8,13 @@ module.exports = {
     },
     debug: true,
     devtool: 'source-map',
+    plugins:[
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery",
+            "window.jQuery": "jquery"
+        })
+    ],
     module: {
         loaders: [
             {
@@ -13,6 +22,13 @@ module.exports = {
                 exclude: /node_modules/,
                 loaders: ['babel-loader'],
             },
+            {
+                test: /\.less/,
+                loader: 'style-loader!css-loader!less-loader'
+            }, {
+                test: /\.(css)$/,
+                loader: 'style-loader!css-loader'
+            }
         ],
         postLoaders: [
             {
