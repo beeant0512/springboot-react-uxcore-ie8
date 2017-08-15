@@ -11,7 +11,8 @@ let {
     FormRowTitle,
     FormRow: Row,
     InputFormField: Input,
-    OtherFormField: Other
+    OtherFormField: Other,
+    Validators
 } = Form;
 
 
@@ -20,21 +21,28 @@ class LoginForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
+
+        this.handleClick = this.handleClick.bind(this);
     }
 
-    login() {
+    handleClick() {
+        let _this = this;
         let formValues = this.refs.form.getValues();
-        if(formValues.pass){
+        if (formValues.pass) {
             Request
                 .post(ctp + '/login')
+                .type('form')
                 .send(formValues.values)
                 .set('X-CSRF-TOKEN', csrf)
                 .end(function (err, res) {
                     console.log(res);
+                    console.log(_this);
                     if (err) {
                         //do something
                     } else {
-                        //do something
+                        if (1 == res.body.code) {
+
+                        }
                     }
                 })
         }
@@ -50,10 +58,17 @@ class LoginForm extends React.Component {
                         ".login-form {width: 532px;width: 532px;margin: auto;top: 100px;position: relative;}"}
                     </style>
                     <Form ref="form" className="login-form">
-                        <Input jsxname="usr" jsxlabel="用户名" autoTrim="true" jsxplaceholder="请输入主题"/>
-                        <Input jsxname="pwd" jsxlabel="密码" inputType="password" autoTrim="true" jsxplaceholder="请输入地点"/>
+                        <Input jsxname="usr" jsxlabel="用户名" autoTrim="true" jsxplaceholder="请输入用户名"
+                               required={true}
+                               jsxrules={[
+                                   {validator: Validators.isNotEmpty, errMsg: "用户名不能为空"}]}/>
+                        <Input jsxname="pwd" jsxlabel="密码" inputType="password" autoTrim="true"
+                               jsxplaceholder="请输入密码"
+                               required={true}
+                               jsxrules={[
+                                   {validator: Validators.isNotEmpty, errMsg: "密码不能为空"}]}/>
                         <Other>
-                            <Button style={{marginLeft: '88px'}} onClick={me.login.bind(me)}>登录</Button>
+                            <Button style={{marginLeft: '88px'}} onClick={this.handleClick}>登录</Button>
                         </Other>
                     </Form>
                 </div>

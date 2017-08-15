@@ -1,5 +1,8 @@
 package com.changan.carbond.config;
 
+import com.changan.carbond.config.security.AuthenticationFailureHandler;
+import com.changan.carbond.config.security.AuthenticationProvider;
+import com.changan.carbond.config.security.AuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -35,16 +38,42 @@ public class WebSecurityConfig {
     private static String PASSWORD = "pwd";
 
     @Bean
-    public UserDetailsService userDetailsService() throws Exception {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("demo").password("demo").roles("DEMO").build());
-        return manager;
-    }
-
-    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    /**
+     * 自定义验证成功处理器
+     *
+     * @return AuthenticationSuccessHandler
+     */
+    @Bean
+    public static AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new AuthenticationSuccessHandler();
+    }
+
+    /**
+     * 自定义验证失败处理器
+     *
+     * @return AuthenticationFailureHandler
+     */
+    @Bean
+    public static AuthenticationFailureHandler authenticationFailureHandler() {
+        return new AuthenticationFailureHandler();
+    }
+
+    /**
+     * 自定义用户详情provider
+     *
+     * @return AuthenticationProvider
+     */
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        AuthenticationProvider customAuthenticationProvider = new AuthenticationProvider();
+        customAuthenticationProvider.setHideUserNotFoundExceptions(false);
+        return customAuthenticationProvider;
+    }
+
 
     @Configuration
     @Order(2)
@@ -59,6 +88,8 @@ public class WebSecurityConfig {
                     .formLogin().loginPage("/login").permitAll()
                     .usernameParameter(USERNAME)
                     .passwordParameter(PASSWORD)
+                    .successHandler(authenticationSuccessHandler())
+                    .failureHandler(authenticationFailureHandler())
                     .and()
                     .logout()
                     .logoutUrl("/logout")

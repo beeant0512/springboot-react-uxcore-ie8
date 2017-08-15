@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>首页</title>
+    <!--<link rel="stylesheet" th:href="@{/static/css/uxcore/blue.min.css}" />-->
+</head>
+<body>
+<div id="login"></div>
+<script th:inline="javascript">
+    var csrf = [[${_csrf.token}]],
+        ctp = [[${#httpServletRequest.getContextPath()}]];
+</script>
+</body>
+</html>
