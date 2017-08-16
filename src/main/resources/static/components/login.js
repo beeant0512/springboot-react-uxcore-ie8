@@ -26,6 +26,7 @@ class LoginForm extends React.Component {
     }
 
     handleClick() {
+
         let _this = this;
         let formValues = this.refs.form.getValues();
         if (formValues.pass) {

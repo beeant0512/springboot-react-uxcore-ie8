@@ -10,7 +10,7 @@ let nodeModulesPath = path.resolve(__dirname, 'node_modules');
 let OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
-    entry: staticFilesPath + '/main.js',
+    entry: staticFilesPath + '/main-noie.js',
     output: {
         path: buildPath,
         filename: './bundle.js'

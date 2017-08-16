@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>登录</title>
-    <!--<link rel="stylesheet" th:href="@{/static/css/uxcore/blue.min.css}" />-->
+    <link rel="stylesheet" th:href="@{/static/css/styles.css}" />
 </head>
 <body>
 <div id="login"></div>
@@ -11,6 +11,10 @@
     var csrf = [[${_csrf.token}]],
         ctp = [[${#httpServletRequest.getContextPath()}]];
 </script>
+<!--<script th:src="@{/static/lib/es5-shim/es5-sham.min.js}"></script>-->
+<!--<script th:src="@{/static/lib/es5-shim/es5-shim.min.js}"></script>-->
+<script th:src="@{/static/lib/react/react.min.js}"></script>
+<script th:src="@{/static/lib/react/react-dom.min.js}"></script>
 <script th:src="@{/static/build/bundle.js}"></script>
 </body>
 </html>
