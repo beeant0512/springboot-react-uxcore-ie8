@@ -8,10 +8,14 @@ let staticFilesPath = path.resolve(__dirname, "src/main/resources/static");
 let buildPath = staticFilesPath + "/build";
 let nodeModulesPath = path.resolve(__dirname, 'node_modules');
 module.exports = {
-    entry: staticFilesPath + '/main.js',
+    entry: {
+        main: staticFilesPath + '/main.js',
+        login: staticFilesPath + '/login.js'
+    },
     output: {
         path: buildPath,
-        filename: './bundle.js'
+        filename: "[name].js",
+        chunkFilename: "[name].js"
     },
     // 此项配置可以将某些库设置为外部引用，内部不会打包合并进去。
     externals: {
@@ -23,6 +27,7 @@ module.exports = {
     debug: true,
     devtool: 'source-map',
     plugins: [
+        new webpack.optimize.CommonsChunkPlugin("common.js", ["main", "login"]),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
@@ -37,6 +42,9 @@ module.exports = {
             {from: nodeModulesPath + '/es5-shim/', to: "../lib/es5-shim"}
         ])
     ],
+    sassLoader: {
+        includePaths: [staticFilesPath + "/style"],
+    },
     module: {
         loaders: [
             {
@@ -45,8 +53,12 @@ module.exports = {
                 loaders: ['babel-loader'],
             },
             {
-                test: /\.less/,
+                test: /\.(less)$/,
                 loader: 'style-loader!css-loader!less-loader'
+            },
+            {
+                test: /\.(scss)$/,
+                loader: ExtractTextPlugin.extract("style-loader", "sass-loader")
             },
             {
                 test: /\.(css)$/,

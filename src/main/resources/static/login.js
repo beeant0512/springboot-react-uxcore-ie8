@@ -19,7 +19,6 @@ require('fetch-ie8');
 // import ReactDOM from 'react-dom';
 
 require('uxcore/assets/blue.css');
-// require('./style/layout.scss');
 
 const React = require('react');
 const ReactDOM = require('react-dom');
@@ -28,4 +27,4 @@ const Request = require('superagent');
  * self define components require field
  */
 
-require('./components/layout');
+require('./components/login');

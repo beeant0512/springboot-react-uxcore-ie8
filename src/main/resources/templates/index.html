@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8"/>
     <title>首页</title>
-    <!--<link rel="stylesheet" th:href="@{/static/css/uxcore/blue.min.css}" />-->
+    <link rel="stylesheet" th:href="@{/static/css/styles.css}" />
 </head>
 <body>
-<div id="login"></div>
+
+
 <script th:inline="javascript">
     var csrf = [[${_csrf.token}]],
         ctp = [[${#httpServletRequest.getContextPath()}]];
 </script>
+
+<script th:src="@{/static/lib/react/react.min.js}"></script>
+<script th:src="@{/static/lib/react/react-dom.min.js}"></script>
+<script th:src="@{/static/build/common.js}"></script>
+<script th:src="@{/static/build/main.js}"></script>
 </body>
 </html>
