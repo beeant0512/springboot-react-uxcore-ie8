@@ -6,7 +6,19 @@
     <link rel="stylesheet" th:href="@{/static/css/styles.css}" />
 </head>
 <body>
-
+    <nav class="site-nav">
+        <a href="/">
+            <img th:src="@{/static/image/logo.png}" alt="logo" />
+        </a>
+        <ul class="nav-list">
+            <li><a href="/">首页</a></li>
+            <li><a href="/">菜单一</a></li>
+            <li><a href="/">菜单二</a></li>
+            <li><a href="/">菜单三</a></li>
+            <li><a href="/">菜单四</a></li>
+        </ul>
+    </nav>
+    <div id="main-body"></div>
 
 <script th:inline="javascript">
     var csrf = [[${_csrf.token}]],

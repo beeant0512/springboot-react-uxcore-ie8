@@ -25,10 +25,17 @@ class LoginForm extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
+    saveRef(refName) {
+        const me = this;
+        return (c) => {
+            me[refName] = c;
+        };
+    }
+
     handleClick() {
 
         let _this = this;
-        let formValues = this.refs.form.getValues();
+        let formValues = this.form.getValues();
         if (formValues.pass) {
             Request
                 .post(ctp + '/login')
@@ -36,14 +43,12 @@ class LoginForm extends React.Component {
                 .send(formValues.values)
                 .set('X-CSRF-TOKEN', csrf)
                 .end(function (err, res) {
-                    console.log(res);
-                    console.log(_this);
                     if (err) {
                         //do something
                     } else {
-                        if (1 == res.body.code) {
-
-                        }
+                        // if (1 == res.body.code) {
+                        _this.form.isDirty(true);
+                        // }
                     }
                 })
         }
@@ -58,7 +63,7 @@ class LoginForm extends React.Component {
                         {".required {font-family:Simsun} " +
                         ".login-form {width: 532px;width: 532px;margin: auto;top: 100px;position: relative;}"}
                     </style>
-                    <Form ref="form" className="login-form">
+                    <Form ref={this.saveRef('form')} className="login-form">
                         <Input jsxname="usr" jsxlabel="用户名" autoTrim="true" jsxplaceholder="请输入用户名"
                                required={true}
                                jsxrules={[
@@ -77,6 +82,6 @@ class LoginForm extends React.Component {
         )
 
     }
-};
+}
 
 ReactDOM.render(<LoginForm/>, document.getElementById('login'));

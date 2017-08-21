@@ -29,3 +29,4 @@ const Request = require('superagent');
  */
 
 require('./components/layout');
+require('./style/layout.scss');

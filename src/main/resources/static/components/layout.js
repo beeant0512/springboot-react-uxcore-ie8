@@ -7,13 +7,6 @@ class MainLayout extends React.Component {
         super(props);
     }
 
-    handleClick(e) {
-        console.log('click ', e);
-        this.setState({
-            current: e.key
-        });
-    }
-
     render() {
         return <div>
             <Layout className="layoutDemo">
@@ -25,4 +18,4 @@ class MainLayout extends React.Component {
     }
 }
 
-ReactDOM.render(<MainLayout/>, document.body);
+ReactDOM.render(<MainLayout/>, document.getElementById('main-body'));
