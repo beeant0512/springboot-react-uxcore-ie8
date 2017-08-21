@@ -9,7 +9,7 @@
     "build-noie": "webpack --config webpack.config.noie.dev.js --colors --profile --json > stats.json",
     "release": "webpack --colors --profile --json > stats.json",
     "release-noie": "webpack --colors --config webpack.config.noie.js --profile --json > stats.noie.json",
-    "build-watch": "webpack --progress --watch",
+    "build-watch": "webpack --config webpack.config.dev.js --progress --watch --profile --json > stats.json",
     "dev": "webpack-dev-server --devtool eval --progress --colors --content-base build"
   },
   "author": "",

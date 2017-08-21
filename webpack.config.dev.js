@@ -14,8 +14,8 @@ module.exports = {
     },
     output: {
         path: buildPath,
-        filename: "[name].js",
-        chunkFilename: "[name].js"
+        filename: "js/[name].js",
+        chunkFilename: "js/[name].js"
     },
     // 此项配置可以将某些库设置为外部引用，内部不会打包合并进去。
     externals: {
@@ -33,7 +33,7 @@ module.exports = {
             jQuery: "jquery",
             "window.jQuery": "jquery"
         }),
-        new ExtractTextPlugin("../css/styles.css"),
+        new ExtractTextPlugin("./css/styles.css"),
         new LodashModuleReplacementPlugin,
         // 把指定文件夹下的文件复制到指定的目录
         new TransferWebpackPlugin([
@@ -42,9 +42,6 @@ module.exports = {
             {from: nodeModulesPath + '/es5-shim/', to: "../lib/es5-shim"}
         ])
     ],
-    sassLoader: {
-        includePaths: [staticFilesPath + "/style"],
-    },
     module: {
         loaders: [
             {
@@ -58,7 +55,7 @@ module.exports = {
             },
             {
                 test: /\.(scss)$/,
-                loader: ExtractTextPlugin.extract("style-loader", "sass-loader")
+                loader: ExtractTextPlugin.extract("style-loader", "css-loader!sass-loader")
             },
             {
                 test: /\.(css)$/,
