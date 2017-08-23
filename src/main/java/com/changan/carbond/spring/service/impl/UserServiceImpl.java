@@ -10,6 +10,8 @@ import com.changan.carbond.spring.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @Component
 public class UserServiceImpl extends BaseServiceImpl<User> implements IUserService {
     @Autowired
@@ -22,7 +24,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
 
     @Override
     public void setDefaults(User record) {
-        if(record.getUserId() == null ) {
+        if (record.getUserId() == null) {
             record.setUserId(IdWorker.getId());
         }
     }
@@ -40,5 +42,12 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
     @Override
     public AppUserDetails selectByUsername(String username) {
         return userMapper.selectByUsername(username);
+    }
+
+    public void updateLastLoginTime(Long userId) {
+        User user = new User();
+        user.setUserId(userId);
+        user.setLastLoginAt(new Date());
+        updateByPrimaryKeySelective(user);
     }
 }

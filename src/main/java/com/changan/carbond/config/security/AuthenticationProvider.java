@@ -3,12 +3,14 @@ package com.changan.carbond.config.security;
 import com.changan.carbond.common.AppUserDetails;
 import com.changan.carbond.spring.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * 自定义用户验证
@@ -29,7 +31,12 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
         AppUserDetails appUserDetails = (AppUserDetails) userDetails;
         String password = (String) authentication.getCredentials();
-
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        boolean matches = passwordEncoder.matches(password, appUserDetails.getPassword());
+        if (!matches) {
+            this.logger.debug("Authentication failed: password does not match stored value");
+            throw new BadCredentialsException(this.messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+        }
     }
 
     @Override

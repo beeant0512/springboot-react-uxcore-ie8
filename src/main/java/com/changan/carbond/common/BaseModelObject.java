@@ -12,11 +12,13 @@ import java.util.Date;
  */
 public class BaseModelObject implements Serializable {
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createAt;
 
     @JsonSerialize(using = ToStringSerializer.class)
     private Long createBy;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateAt;
 
     @JsonSerialize(using = ToStringSerializer.class)

@@ -46,16 +46,32 @@ class LoginForm extends React.Component {
                     if (err) {
                         //do something
                     } else {
-                        // if (1 == res.body.code) {
-                        _this.form.isDirty(true);
-                        // }
+                        let codeToField = {
+                            2: 'usr',
+                            1: 'pwd'
+                        };
+                        _this.setState({
+                            errMsg: res.body.msg,
+                            isDirty: true,
+                            field: codeToField[res.body.code],
+                            submit: true,
+                        }, () => {
+                            _this.form.doValidate();
+                        });
+
+                        _this.setState({
+                            errMsg: '',
+                            isDirty: false,
+                            field: codeToField[res.body.code],
+                            submit: false,
+                        });
                     }
                 })
         }
     }
 
     render() {
-        let me = this;
+        let _this = this;
         return (
             <div className="kuma-container-full">
                 <div className="login">
@@ -63,16 +79,34 @@ class LoginForm extends React.Component {
                         {".required {font-family:Simsun} " +
                         ".login-form {width: 532px;width: 532px;margin: auto;top: 100px;position: relative;}"}
                     </style>
-                    <Form ref={this.saveRef('form')} className="login-form">
+                    <Form ref={this.saveRef('form')} className="login-form" jsxonChange={function (values, name, pass) {
+                        _this.form.doValidate();
+                    }}>
                         <Input jsxname="usr" jsxlabel="用户名" autoTrim="true" jsxplaceholder="请输入用户名"
                                required={true}
                                jsxrules={[
-                                   {validator: Validators.isNotEmpty, errMsg: "用户名不能为空"}]}/>
+                                   {validator: Validators.isNotEmpty, errMsg: "用户名不能为空"},
+                                   {
+                                       validator: (value) => {
+                                           if (this.state.field === 'usr' && this.state.isDirty) {
+                                               return false;
+                                           }
+                                           return true
+                                       }, errMsg: this.state.errMsg
+                                   }]}/>
                         <Input jsxname="pwd" jsxlabel="密码" inputType="password" autoTrim="true"
                                jsxplaceholder="请输入密码"
                                required={true}
                                jsxrules={[
-                                   {validator: Validators.isNotEmpty, errMsg: "密码不能为空"}]}/>
+                                   {validator: Validators.isNotEmpty, errMsg: "密码不能为空"},
+                                   {
+                                       validator: (value) => {
+                                           if (this.state.field === 'pwd' && this.state.isDirty) {
+                                               return false;
+                                           }
+                                           return true
+                                       }, errMsg: this.state.errMsg
+                                   }]}/>
                         <Other>
                             <Button style={{marginLeft: '88px'}} onClick={this.handleClick}>登录</Button>
                         </Other>
