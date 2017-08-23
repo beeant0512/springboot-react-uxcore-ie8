@@ -5,12 +5,11 @@ import com.changan.carbond.common.Msg;
 import com.changan.carbond.common.enums.EnError;
 import com.changan.carbond.common.utils.ContextUtil;
 import com.changan.carbond.spring.model.LogUserLogin;
-import com.changan.carbond.spring.service.ILogUserLoginService;
+import com.changan.carbond.spring.service.impl.LogUserLoginServiceImpl;
 import com.changan.carbond.spring.service.impl.UserServiceImpl;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -35,14 +34,11 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
 
     private String defaultSuccessUrl = "/";
 
-    @Autowired
-    private ILogUserLoginService logUserLoginService;
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response, Authentication authentication) throws IOException,
             ServletException {
-        UserServiceImpl userService = ContextUtil.getContext().getBean(UserServiceImpl.class);
+        UserServiceImpl userService = ContextUtil.getBean(UserServiceImpl.class);
 
         // 获得授权后可得到用户信息   可使用 SUserService 进行数据库操作
         AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
@@ -55,12 +51,6 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
         // 输出登录提示信息
         ObjectMapper objectMapper = new ObjectMapper();
         response.setHeader("Content-Type", "application/json;charset=UTF-8");
-        /*String targetUrl = this.getDefaultTargetUrl();
-
-        // 重定向url
-        if ("/".equals(targetUrl)) {
-            targetUrl = "/";
-        }*/
 
         response.setHeader("redirect", targetUrl);
         response.setStatus(200);
@@ -76,6 +66,7 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
         logUserLogin.setCreateBy(userDetails.getUserId());
         logUserLogin.setAgent(request.getHeader("user-agent"));
         logUserLogin.setIp(request.getRemoteAddr());
+        LogUserLoginServiceImpl logUserLoginService = ContextUtil.getBean(LogUserLoginServiceImpl.class);
         logUserLoginService.insertSelective(logUserLogin);
     }
 }

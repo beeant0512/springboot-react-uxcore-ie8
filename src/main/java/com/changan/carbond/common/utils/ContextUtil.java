@@ -34,4 +34,8 @@ public class ContextUtil {
         }
         return user;
     }
+
+    public static <T> T getBean(Class<T> requiredType){
+        return context.getBean(requiredType);
+    }
 }

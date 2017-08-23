@@ -32,6 +32,7 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
         AppUserDetails appUserDetails = (AppUserDetails) userDetails;
         String password = (String) authentication.getCredentials();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        logger.debug(passwordEncoder.encode("spring"));
         boolean matches = passwordEncoder.matches(password, appUserDetails.getPassword());
         if (!matches) {
             this.logger.debug("Authentication failed: password does not match stored value");

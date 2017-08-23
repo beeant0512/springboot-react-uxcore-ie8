@@ -4,7 +4,6 @@ const Request = require('superagent');
 
 require('uxcore/assets/blue.css');
 
-
 let Button = require('uxcore-button');
 let Form = require('uxcore-form');
 let {
@@ -45,6 +44,10 @@ class LoginForm extends React.Component {
                 .end(function (err, res) {
                     if (err) {
                         //do something
+                    }
+
+                    if (res.body.success) {
+                        window.location.href = res.body.data;
                     } else {
                         let codeToField = {
                             2: 'usr',
