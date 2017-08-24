@@ -183,7 +183,7 @@ public abstract class BaseServiceImpl<T extends BaseModelObject> implements IBas
     @Override
     public Msg<Integer> deleteByExample(T record) {
         Msg<Integer> msg = new Msg<>();
-        int result = getRepositoryDao().deleteByExample(record);
+        int result = getRepositoryDao().deleteByExample(record, false);
         if (0 == result) {
             msg.setResult(EnError.DELETE_NONE);
             return msg;
@@ -408,7 +408,7 @@ public abstract class BaseServiceImpl<T extends BaseModelObject> implements IBas
     @Override
     public Msg<PageList<T>> selectByExampleByPager(T record, PageBounds pageBounds) {
         Msg<PageList<T>> msg = new Msg<>();
-        PageList<T> result = getRepositoryDao().selectByExampleByPager(record, pageBounds);
+        PageList<T> result = getRepositoryDao().selectByExampleByPager(record, true, pageBounds);
         if (result.isEmpty()) {
             msg.setResult(EnError.NO_MATCH);
             return msg;

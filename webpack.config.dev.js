@@ -3,6 +3,9 @@ let path = require('path');
 
 let LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
+const extractSass = new ExtractTextPlugin("./css/style.css");
+const extractCSS = new ExtractTextPlugin("./css/styles.css");
+
 let TransferWebpackPlugin = require('transfer-webpack-plugin');
 let staticFilesPath = path.resolve(__dirname, "src/main/resources/static");
 let buildPath = staticFilesPath + "/build";
@@ -33,7 +36,8 @@ module.exports = {
             jQuery: "jquery",
             "window.jQuery": "jquery"
         }),
-        new ExtractTextPlugin("./css/styles.css"),
+        extractCSS,
+        extractSass,
         new LodashModuleReplacementPlugin,
         // 把指定文件夹下的文件复制到指定的目录
         new TransferWebpackPlugin([
@@ -50,16 +54,12 @@ module.exports = {
                 loaders: ['babel-loader'],
             },
             {
-                test: /\.(less)$/,
-                loader: 'style-loader!css-loader!less-loader'
-            },
-            {
                 test: /\.(scss)$/,
-                loader: ExtractTextPlugin.extract("style-loader", "css-loader!sass-loader")
+                loader: extractSass.extract("style-loader", "css-loader!sass-loader")
             },
             {
                 test: /\.(css)$/,
-                loader: ExtractTextPlugin.extract("style-loader", "css-loader")
+                loader: extractCSS.extract("style-loader", "css-loader")
             },
         ],
         postLoaders: [
@@ -68,5 +68,5 @@ module.exports = {
                 loaders: ['es3ify-loader'],
             },
         ],
-    },
+    }
 };

@@ -1,0 +1,41 @@
+html, body {
+  min-height: 100%;
+}
+
+.site-nav {
+  position: static;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #288df0;
+  transition: background-color ease-out .5s;
+  z-index: 99;
+  a {
+    color: #fff;
+  }
+  .logo {
+    float: left;
+    width: 140px;
+    height: 20px;
+    margin: 15px 10px 0 20px;
+    transition: all ease-out .25s;
+  }
+
+  .nav-list {
+    margin-left: 140px;
+    font-size: 15px;
+    line-height: 50px;
+    transition: line-height ease-out .25s;
+
+    li {
+      padding: 0 25px;
+      transition: background-color ease-in .2s;
+    }
+  }
+}
+
+.nav-list {
+  display: -ms-flexbox;
+  display: flex;
+}

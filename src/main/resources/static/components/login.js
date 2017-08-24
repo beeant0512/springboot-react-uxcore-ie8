@@ -7,8 +7,6 @@ require('uxcore/assets/blue.css');
 let Button = require('uxcore-button');
 let Form = require('uxcore-form');
 let {
-    FormRowTitle,
-    FormRow: Row,
     InputFormField: Input,
     OtherFormField: Other,
     Validators
@@ -85,29 +83,23 @@ class LoginForm extends React.Component {
                     <Form ref={this.saveRef('form')} className="login-form" jsxonChange={function (values, name, pass) {
                         _this.form.doValidate();
                     }}>
-                        <Input jsxname="usr" jsxlabel="用户名" autoTrim="true" jsxplaceholder="请输入用户名"
+                        <Input jsxname="usr" jsxlabel="用户名" autoTrim={true} jsxplaceholder="请输入用户名"
                                required={true}
                                jsxrules={[
                                    {validator: Validators.isNotEmpty, errMsg: "用户名不能为空"},
                                    {
                                        validator: (value) => {
-                                           if (this.state.field === 'usr' && this.state.isDirty) {
-                                               return false;
-                                           }
-                                           return true
+                                           return !(this.state.field === 'usr' && this.state.isDirty)
                                        }, errMsg: this.state.errMsg
                                    }]}/>
-                        <Input jsxname="pwd" jsxlabel="密码" inputType="password" autoTrim="true"
+                        <Input jsxname="pwd" jsxlabel="密码" inputType="password" autoTrim={true}
                                jsxplaceholder="请输入密码"
                                required={true}
                                jsxrules={[
                                    {validator: Validators.isNotEmpty, errMsg: "密码不能为空"},
                                    {
                                        validator: (value) => {
-                                           if (this.state.field === 'pwd' && this.state.isDirty) {
-                                               return false;
-                                           }
-                                           return true
+                                           return !(this.state.field === 'pwd' && this.state.isDirty)
                                        }, errMsg: this.state.errMsg
                                    }]}/>
                         <Other>

@@ -18,9 +18,14 @@ spring:
       # Validate the connection before borrowing it from the pool.
       test-on-borrow: true
 
-
 ## mybatis ##
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
   executorType: batch
+logging:
+  level:
+    ROOT: debug
+    org:
+      springframework: info
+#  config: classpath:log4j2.yml

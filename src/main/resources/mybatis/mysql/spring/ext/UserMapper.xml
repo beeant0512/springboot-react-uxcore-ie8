@@ -8,6 +8,6 @@
         <association property="details" resultMap="BaseResultMap"/>
     </resultMap>
     <select id="selectByUsername" resultMap="appUserDetailsMap">
-        SELECT * FROM `user` WHERE user_name = #{username}
+        SELECT * FROM `application_user` WHERE user_name = #{username}
     </select>
 </mapper>

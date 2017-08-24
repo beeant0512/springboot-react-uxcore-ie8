@@ -1,6 +1,7 @@
 package com.changan.carbond.config.security;
 
 import com.changan.carbond.common.AppUserDetails;
+import com.changan.carbond.common.HttpClientUtil;
 import com.changan.carbond.common.Msg;
 import com.changan.carbond.common.enums.EnError;
 import com.changan.carbond.common.utils.ContextUtil;
@@ -65,7 +66,7 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
         LogUserLogin logUserLogin = new LogUserLogin();
         logUserLogin.setCreateBy(userDetails.getUserId());
         logUserLogin.setAgent(request.getHeader("user-agent"));
-        logUserLogin.setIp(request.getRemoteAddr());
+        logUserLogin.setIp(HttpClientUtil.getIp(request));
         LogUserLoginServiceImpl logUserLoginService = ContextUtil.getBean(LogUserLoginServiceImpl.class);
         logUserLoginService.insertSelective(logUserLogin);
     }

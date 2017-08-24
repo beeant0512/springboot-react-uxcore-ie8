@@ -21,6 +21,14 @@ repositories {
     maven { url "http://172.16.1.188:8082/content/groups/public" }
 }
 
+configurations.all {
+    exclude group: "ch.qos.logback", module: "logback-classic"
+    exclude group: "ch.qos.logback", module: "logback-core"
+    exclude group: "commons-logging", module: "commons-logging"
+    exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+    exclude group: "log4j", module: "log4j"
+    exclude group: "org.slf4j", module: "slf4j-log4j12"
+}
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
@@ -28,6 +36,11 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-websocket')
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+
+    compile('org.springframework.boot:spring-boot-starter-log4j2')
+    compile('org.slf4j:log4j-over-slf4j')   // 把log4j的日志输出重定向到slf4j进行输出
 
     compile("mysql:mysql-connector-java")
     compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.2.0')

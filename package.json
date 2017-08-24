@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.dev.js --colors --profile --json > stats.json",
-    "build-noie": "webpack --config webpack.config.noie.dev.js --colors --profile --json > stats.json",
+    "build": "webpack --config webpack.config.dev.js --display-error-details",
+    "build-profile": "webpack --config webpack.config.dev.js -profile --json > stats.json",
+    "build-noie": "webpack --config webpack.config.noie.dev.js --display-error-details --profile --json > stats.json",
     "release": "webpack --colors --profile --json > stats.json",
-    "release-noie": "webpack --colors --config webpack.config.noie.js --profile --json > stats.noie.json",
-    "build-watch": "webpack --config webpack.config.dev.js --progress --watch --profile --json > stats.json",
-    "dev": "webpack-dev-server --devtool eval --progress --colors --content-base build"
+    "release-noie": "webpack --colors --config webpack.config.noie.js --display-error-details --profile --json > stats.noie.json",
+    "build-watch": "webpack --config webpack.config.dev.js --progress --watch --display-error-details --profile --json > stats.json",
+    "dev": "webpack-dev-server --devtool eval --progress --display-error-details  --content-base build"
   },
   "author": "",
   "license": "ISC",

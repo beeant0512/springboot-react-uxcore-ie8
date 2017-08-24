@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 基础dao
+ *
  * @author xiaobiao
  * @version 1.0.0 on 2017.04.12
  */
@@ -24,7 +25,7 @@ public interface IBaseDao<T> {
 
     int deleteByPrimaryKey(String key);
 
-    int deleteByExample(T record);
+    int deleteByExample(@Param("example") T record, @Param("all") Boolean deleteAllTable);
 
     int batchDeleteByPrimaryKey(@Param("items") String[] keys);
 
@@ -44,7 +45,7 @@ public interface IBaseDao<T> {
 
     List<T> selectByExample(@Param("example") T record, @Param("distinct") boolean distinct);
 
-    PageList<T> selectByExampleByPager(@Param("example") T record, @Param("pageBounds") PageBounds pageBounds);
+    PageList<T> selectByExampleByPager(@Param("example") T record, @Param("all") Boolean all, @Param("pageBounds") PageBounds pageBounds);
 
     T fuzzySearch(T record);
 

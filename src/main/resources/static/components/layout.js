@@ -9,12 +9,11 @@ class MainLayout extends React.Component {
 
     render() {
         return <div>
-            <Layout className="layoutDemo">
-                <Left width={190} className="left">左</Left>
-                <Right adaptive={true} className="right">右</Right>
+            <Layout>
+                <Left width={190} className="aside left-side-menu">左</Left>
+                <Right adaptive={true} className="site-content">右</Right>
             </Layout>
         </div>
-
     }
 }
 
