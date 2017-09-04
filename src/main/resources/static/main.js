@@ -19,6 +19,7 @@ require('fetch-ie8');
 // import ReactDOM from 'react-dom';
 
 require('uxcore/assets/blue.css');
+require('uxcore/assets/blue.css');
 require('./style/style.scss');
 
 
