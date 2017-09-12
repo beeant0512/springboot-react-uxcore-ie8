@@ -21,7 +21,7 @@ class LeftSideMenu extends React.Component {
     }
 
     onToggle(info) {
-        console.info(info)
+        console.info(info);
         this.setState({
             openKeys: info.openKeys
         });
@@ -41,12 +41,6 @@ class LeftSideMenu extends React.Component {
             async: false,
             success: function (res) {
                 if (res.success) {
-                    let _submenu;
-                    $.each(res.data, function (idx, value) {
-                        _submenu = <SubMenu key={value.menuId}
-                                            title={<span><i className="kuma-icon kuma-icon-email"></i><span>{value.menuName}</span></span>}>
-                        </SubMenu>
-                    })
                     _render = <Menu onClick={_this.handleClick.bind(_this)}
                                     style={{width: 240}}
                                     openKeys={_this.state.openKeys}
@@ -54,7 +48,11 @@ class LeftSideMenu extends React.Component {
                                     onClose={_this.onToggle.bind(_this)}
                                     selectedKeys={[_this.state.current]}
                                     mode="inline">
-                        {_submenu}
+                        {res.data.map((e, index) =>
+                            <SubMenu key={e.menuId}
+                                     title={<span><i
+                                         className="kuma-icon kuma-icon-email"></i><span>{e.menuName}</span></span>}>
+                            </SubMenu>)}
                     </Menu>;
                 }
             }

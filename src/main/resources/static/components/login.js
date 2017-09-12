@@ -45,7 +45,7 @@ class LoginForm extends React.Component {
                     }
 
                     if (res.body.success) {
-                        window.location.href = res.body.data;
+                        window.location.href = ctp + res.body.data;
                     } else {
                         let codeToField = {
                             2: 'usr',

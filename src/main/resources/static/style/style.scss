@@ -13,6 +13,9 @@ html, body {
   z-index: 99;
   a {
     color: #fff;
+    :visited{
+      color: #fff;
+    }
   }
   .logo {
     float: left;

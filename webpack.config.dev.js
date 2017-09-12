@@ -4,6 +4,7 @@ let path = require('path');
 let LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
 const extractSass = new ExtractTextPlugin("./css/style.css");
+const extractKuma = new ExtractTextPlugin("./css/kuma.css");
 const extractCSS = new ExtractTextPlugin("./css/styles.css");
 
 let TransferWebpackPlugin = require('transfer-webpack-plugin');
@@ -37,6 +38,7 @@ module.exports = {
             "window.jQuery": "jquery"
         }),
         extractCSS,
+        extractKuma,
         extractSass,
         new LodashModuleReplacementPlugin,
         // 把指定文件夹下的文件复制到指定的目录
@@ -52,6 +54,10 @@ module.exports = {
                 test: /\.js$/,
                 exclude: [nodeModulesPath],
                 loaders: ['babel-loader'],
+            },
+            {
+                test: /\.(less)$/,
+                loader: extractKuma.extract("style-loader", "css-loader!less-loader")
             },
             {
                 test: /\.(scss)$/,

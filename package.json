@@ -17,7 +17,6 @@
   "license": "ISC",
   "dependencies": {
     "await": "^0.2.6",
-    "kuma-base": "^1.5.5",
     "react": "^0.14.8",
     "react-dom": "^0.14.8",
     "superagent": "^3.5.2",
