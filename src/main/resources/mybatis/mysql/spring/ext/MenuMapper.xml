@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.changan.carbond.spring.mapper.MenuMapper">
+
+    <select id="selectByExampleByPagerExtend" resultMap="BaseResultMap">
+        select am.*,count(sm.menu_id) has_child from application_menu am
+            left JOIN application_menu sm on sm.parent_menu_id = am.menu_id
+        where am.level = 1 group by am.menu_id
+    </select>
+</mapper>

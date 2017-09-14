@@ -27,16 +27,15 @@ class LeftSideMenu extends React.Component {
         });
     }
 
+    _create_menu_item(menu) {
+        return <Menu.Item key={menu.menuId} >
+            <i className="kuma-icon kuma-icon-email"></i>{menu.menuName}</Menu.Item>;
+    }
+
     render() {
         let _this = this;
-        let _render = <Menu onClick={_this.handleClick.bind(_this)}
-                            style={{width: 240}}
-                            openKeys={_this.state.openKeys}
-                            onOpen={_this.onToggle.bind(_this)}
-                            onClose={_this.onToggle.bind(_this)}
-                            selectedKeys={[_this.state.current]}
-                            mode="inline"></Menu>;
-        let req = $.get({
+        let _render;
+        $.get({
             url: ctp + '/menu/list',
             async: false,
             success: function (res) {
@@ -48,11 +47,11 @@ class LeftSideMenu extends React.Component {
                                     onClose={_this.onToggle.bind(_this)}
                                     selectedKeys={[_this.state.current]}
                                     mode="inline">
-                        {res.data.map((e, index) =>
-                            <SubMenu key={e.menuId}
-                                     title={<span><i
-                                         className="kuma-icon kuma-icon-email"></i><span>{e.menuName}</span></span>}>
-                            </SubMenu>)}
+                        {
+                            res.data.map((e, index) =>
+                                _this._create_menu_item(e)
+                            )
+                        }
                     </Menu>;
                 }
             }
