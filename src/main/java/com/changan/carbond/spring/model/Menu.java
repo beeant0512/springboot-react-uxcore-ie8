@@ -1,10 +1,7 @@
 package com.changan.carbond.spring.model;
 
 import com.changan.carbond.common.BaseModelObject;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.io.Serializable;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -21,7 +18,6 @@ public class Menu extends BaseModelObject implements Serializable {
      *
      * @mbg.generated
      */
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long menuId;
 
     /**
@@ -33,7 +29,6 @@ public class Menu extends BaseModelObject implements Serializable {
      *
      * @mbg.generated
      */
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long parentMenuId;
 
     /**

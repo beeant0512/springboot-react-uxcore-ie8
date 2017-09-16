@@ -1,39 +1,37 @@
 package com.changan.carbond.common;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
 import java.util.Date;
+
 
 /**
  * Created by xiaobiao on 2017/2/24.
  */
 public class BaseModelObject implements Serializable {
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private static final long serialVersionUID = 935758400379221981L;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createAt;
 
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long createBy;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date updateAt;
 
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long updateBy;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createAtBegin;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createAtEnd;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date updateAtBegin;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date updateAtEnd;
 
     public Date getCreateAt() {
