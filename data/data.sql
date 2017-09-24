@@ -1,0 +1,8 @@
+INSERT INTO `spring`.`application_menu`(`menu_id`, `parent_menu_id`, `menu_name`, `menu_url`, `menu_perm`, `level`, `create_at`, `create_by`, `update_at`, `update_by`) VALUES (25247328336084989, 0, 'menu', '', '', 1, NULL, NULL, NULL, NULL);
+INSERT INTO `spring`.`application_menu`(`menu_id`, `parent_menu_id`, `menu_name`, `menu_url`, `menu_perm`, `level`, `create_at`, `create_by`, `update_at`, `update_by`) VALUES (25247328336084992, 0, 'menu2', '', '', 1, NULL, NULL, NULL, NULL);
+INSERT INTO `spring`.`application_menu`(`menu_id`, `parent_menu_id`, `menu_name`, `menu_url`, `menu_perm`, `level`, `create_at`, `create_by`, `update_at`, `update_by`) VALUES (25252944223928320, 25247328336084992, 'menu2-1', '', '', 2, NULL, NULL, NULL, NULL);
+INSERT INTO `spring`.`application_menu`(`menu_id`, `parent_menu_id`, `menu_name`, `menu_url`, `menu_perm`, `level`, `create_at`, `create_by`, `update_at`, `update_by`) VALUES (25252944223928321, 25247328336084992, 'menu2-2', '', '', 2, NULL, NULL, NULL, NULL);
+INSERT INTO `spring`.`application_menu`(`menu_id`, `parent_menu_id`, `menu_name`, `menu_url`, `menu_perm`, `level`, `create_at`, `create_by`, `update_at`, `update_by`) VALUES (25252944223928322, 25252944223928320, 'menu2-1-1', '', '', 3, NULL, NULL, NULL, NULL);
+
+
+INSERT INTO `spring`.`application_user`(`user_id`, `user_name`, `user_password`, `create_at`, `create_by`, `update_at`, `update_by`, `last_login_at`) VALUES (900297894744031232, 'spring', '$2a$10$VMeKQNRjJ1ZBP8ANqvKR3Oyn/HWCQ.UlygE.k4C7dAFnJj1Rqw4FS', '2017-08-23 18:05:19', 0, '2017-09-17 18:45:43', 900297894744031232, '2017-09-17 18:45:43');
