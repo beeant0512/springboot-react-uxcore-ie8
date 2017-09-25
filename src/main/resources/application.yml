@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/spring
     username: root
-    password: 123456
+    password:
     driver-class-name: com.mysql.jdbc.Driver
     tomcat:
       # Number of ms to wait before throwing an exception if no connection is available.
@@ -17,6 +17,9 @@ spring:
       max-active: 50
       # Validate the connection before borrowing it from the pool.
       test-on-borrow: true
+  thymeleaf:
+    mode: HTML5
+    cache: false
 
 ## mybatis ##
 mybatis:
