@@ -1,7 +1,5 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
-const Request = require('superagent');
-
 require('uxcore/assets/blue.css');
 
 let Button = require('uxcore-button');
@@ -34,27 +32,24 @@ class LoginForm extends React.Component {
         let _this = this;
         let formValues = this.form.getValues();
         if (formValues.pass) {
-            Request
-                .post(ctp + '/login')
-                .type('form')
-                .send(formValues.values)
-                .set('X-CSRF-TOKEN', csrf)
-                .end(function (err, res) {
-                    if (err) {
-                        //do something
-                    }
-
-                    if (res.body.success) {
-                        window.location.href = ctp + res.body.data;
+            $.post({
+                headers: {
+                    'X-CSRF-TOKEN': csrf
+                },
+                url: ctp + '/login',
+                data: formValues.values,
+                success: function (res) {
+                    if (res.success) {
+                        window.location.href = res.data;
                     } else {
                         let codeToField = {
                             2: 'usr',
                             1: 'pwd'
                         };
                         _this.setState({
-                            errMsg: res.body.msg,
+                            errMsg: res.msg,
                             isDirty: true,
-                            field: codeToField[res.body.code],
+                            field: codeToField[res.code],
                             submit: true,
                         }, () => {
                             _this.form.doValidate();
@@ -63,11 +58,12 @@ class LoginForm extends React.Component {
                         _this.setState({
                             errMsg: '',
                             isDirty: false,
-                            field: codeToField[res.body.code],
+                            field: codeToField[res.code],
                             submit: false,
                         });
                     }
-                })
+                }
+            });
         }
     }
 
