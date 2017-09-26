@@ -9,7 +9,7 @@
 <div id="login"></div>
 
 <script th:inline="javascript">
-    var csrf = [[${_csrf.token}]],
+    var csrf = '',
         ctp = [[${#httpServletRequest.getContextPath()}]];
 </script>
 <!--<script th:src="@{/static/lib/es5-shim/es5-sham.min.js}"></script>-->

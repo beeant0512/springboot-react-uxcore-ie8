@@ -24,8 +24,8 @@
     <div id="main-body"></div>
 
 <script th:inline="javascript">
-    var csrf = [[${_csrf.token}]],
-        ctp = [[${#httpServletRequest.getContextPath()}]];
+   var csrf = '',
+       ctp = [[${#httpServletRequest.getContextPath()}]];
 </script>
 
 <script th:src="@{/static/lib/react/react.js}"></script>

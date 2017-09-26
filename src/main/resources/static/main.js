@@ -28,7 +28,10 @@ const ReactDOM = require('react-dom');
 /*
  * self define components require field
  */
-
-require('./components/layout');
+let leftSideWidth = 190;
+let MainLayout = require('./components/layout');
 require('./components/side-menu');
+require('./components/crud');
+
+// ReactDOM.render(<MainLayout leftSideWidth={leftSideWidth}/>, document.getElementById('main-body'));
 // require('./style/layout');

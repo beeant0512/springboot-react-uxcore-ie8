@@ -13,7 +13,7 @@ class LeftSideMenu extends React.Component {
         };
         _this.data = [];
         $.get({
-            url: ctp + '/menu/tree',
+            url: _this.props.url,
             async: false,
             success: function (res) {
                 if (res.success) {
@@ -24,7 +24,6 @@ class LeftSideMenu extends React.Component {
     }
 
     handleClick(e) {
-        console.info('click ', e);
         this.setState({
             current: e.key,
             openKeys: e.keyPath.slice(1)
@@ -39,31 +38,31 @@ class LeftSideMenu extends React.Component {
 
     build_menu(list) {
         let _this = this;
-        let menu = [];
+        let items = [];
         list.map(function (item) {
-                menu.push(_this._create_menu_item(item));
+                items.push(_this.createMenuItem(item));
             }
         );
 
-        return menu;
+        return items;
     }
 
-    _create_menu_item(menu) {
+    createMenuItem(item) {
         let _this = this;
-        if (menu.child != undefined && menu.child.length > 0) {
-            return <SubMenu key={menu.menuId} title={<span><i
-                className="kuma-icon kuma-icon-email"></i><span>{menu.menuName}</span></span>}>
-                {_this.build_menu(menu.child)}
+        if (item.child !== undefined && item.child.length > 0) {
+            return <SubMenu key={item[_this.props.id]} title={
+                <span><i className="kuma-icon kuma-icon-email"></i><span>{item[_this.props.text]}</span></span>}>
+                {_this.build_menu(item.child)}
             </SubMenu>;
         }
-        return <Menu.Item key={menu.menuId}>
-            <i className="kuma-icon kuma-icon-email"></i>{menu.menuName}</Menu.Item>;
+        return <Menu.Item key={item[_this.props.id]}>
+            <i className="kuma-icon kuma-icon-email"></i>{item[_this.props.text]}</Menu.Item>;
     }
 
     render() {
         let _this = this;
         return (<Menu onClick={_this.handleClick.bind(_this)}
-                      style={{width: 240}}
+                      style={{border: 'none'}}
                       openKeys={_this.state.openKeys}
                       onOpen={_this.onToggle.bind(_this)}
                       onClose={_this.onToggle.bind(_this)}
@@ -76,4 +75,5 @@ class LeftSideMenu extends React.Component {
     }
 }
 
-ReactDOM.render(<LeftSideMenu/>, document.getElementsByClassName('left-side-menu')[0]);
+ReactDOM.render(<LeftSideMenu url={ctp + '/menu/tree'} text={'menuName'}
+                              id={'menuId'}/>, document.getElementsByClassName('left-side-menu')[0]);

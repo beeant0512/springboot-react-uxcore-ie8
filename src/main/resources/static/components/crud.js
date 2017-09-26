@@ -117,23 +117,11 @@ class Crud extends React.Component {
     render() {
         let me = this;
 
-        let columns = [
-            { dataKey: 'id', title: 'ID', width: 50,hidden:true},
-            { dataKey: 'country', title:'国家', width: 200, type: "money", delimiter: ','},
-            { dataKey: 'city',title:'城市', width: 150,ordered:true },
-            { dataKey: 'firstName',title:"FristName" },
-            { dataKey: 'lastName' ,title:"LastName"},
-            { dataKey: 'email',title:"Email",width: 200},
-            { dataKey: 'action1', title: '操作', width: 100, type: 'action', actions: {
-                '编辑': function(rowData, actions) {
-                    me.showEditDialog(rowData);
-                }
-            }}
-        ];
+        let columns = me.props.columns;
 
         let tableProps = {
             width: 1000,
-            fetchUrl: "http://eternalsky.me:8122/file/getGridJson.jsonp",
+            fetchUrl: ctp + "/menu/table",
             jsxcolumns: columns,
             fetchParams: me.state.fetchParams,
             actionBar: {
@@ -179,7 +167,7 @@ class Crud extends React.Component {
                 <h2>增删改查</h2>
                 <Form ref="searchForm" className="searchForm">
                     <FormRow>
-                        <InputFormField jsxname="searchTxt" jsxshowLabel={false} jsxplaceholder="输入关键字进行查询" />
+                        <InputFormField jsxname="menuName" jsxshowLabel={false} jsxplaceholder="输入菜单名称字进行查询" />
                         <OtherFormField className="searchButton">
                             <Button onClick={me.handleSearch.bind(me)}>查询</Button>
                         </OtherFormField>
@@ -198,4 +186,13 @@ class Crud extends React.Component {
 
 }
 
-ReactDOM.render( <Demo /> , document.getElementById('main-body'));
+ReactDOM.render( <Crud columns={[
+    { dataKey: 'menuId', title: 'ID', width: 50,hidden:true},
+    { dataKey: 'menuName', title:'菜单名称', width: 200, ordered:true },
+    { dataKey: 'menuUrl',title:'地址', width: 150, ordered:true },
+    { dataKey: 'menuPerm', title: '权限', width: 100, type: 'action', actions: {
+        '编辑': function(rowData, actions) {
+            me.showEditDialog(rowData);
+        }
+    }}
+]}/> , document.getElementsByClassName('site-content')[0]);

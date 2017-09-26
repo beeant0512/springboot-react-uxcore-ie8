@@ -36,7 +36,7 @@ class LoginForm extends React.Component {
                 headers: {
                     'X-CSRF-TOKEN': csrf
                 },
-                url: ctp + '/login',
+                url: _this.props.url,
                 data: formValues.values,
                 success: function (res) {
                     if (res.success) {
@@ -108,4 +108,4 @@ class LoginForm extends React.Component {
     }
 }
 
-ReactDOM.render(<LoginForm/>, document.getElementById('login'));
+ReactDOM.render(<LoginForm url={ctp + '/login'}/>, document.getElementById('login'));
