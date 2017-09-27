@@ -3,6 +3,7 @@ package com.changan.carbond.mvc;
 
 import com.changan.carbond.common.IBaseService;
 import com.changan.carbond.common.Msg;
+import com.changan.carbond.common.uxcore.TablePageBounds;
 import com.changan.carbond.common.uxcore.TableResponse;
 import com.changan.carbond.spring.model.Menu;
 import com.changan.carbond.spring.service.IMenuService;
@@ -41,9 +42,8 @@ public class MenuController extends BaseController<Menu> {
 
     @RequestMapping(value = {"table"})
     @ResponseBody
-    public TableResponse<Menu> table(Menu menu, PageBounds pageBounds) {
-        pageBounds.setContainsTotalCount(true);
-        Msg<PageList<Menu>> pageListMsg = menuService.fuzzySearchByPager(menu, pageBounds);
+    public TableResponse<Menu> table(Menu menu, TablePageBounds tablePageBounds) {
+        Msg<PageList<Menu>> pageListMsg = menuService.fuzzySearchByPager(menu, tablePageBounds.getPageBounds());
 
         return new TableResponse<>(pageListMsg);
     }

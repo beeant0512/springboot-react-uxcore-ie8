@@ -21,6 +21,7 @@ class Crud extends React.Component {
             fetchParams: {},
             editShow: false,
             newShow: false,
+            delShow: false,
             editValues: null
         }
     }
@@ -30,7 +31,7 @@ class Crud extends React.Component {
         let data = me.refs.searchForm.getValues();
         me.setState({
             fetchParams: data.values
-        }, function() {
+        }, function () {
             me.refs.table.fetchData();
         })
     }
@@ -47,12 +48,10 @@ class Crud extends React.Component {
         let data = me.refs.editForm.getValues();
         if (data.pass) {
             $.ajax({
-                url: 'http://eternalsky.me:8122/file/writeGrid.jsonp',
-                dataType: 'jsonp',
-                data: {
-                    data: data.values
-                },
-                success: function(result) {
+                url: ctp + '/menu/' + data.values.menuId,
+                method: 'put',
+                data: data.values,
+                success: function (result) {
                     if (result.success) {
                         me.toggleShow('editShow');
                         me.refs.table.fetchData();
@@ -73,16 +72,10 @@ class Crud extends React.Component {
         let data = me.refs.editForm.getValues();
         if (data.pass) {
             $.ajax({
-                url: 'http://eternalsky.me:8122/file/addNewData.jsonp',
-                dataType: 'jsonp',
-                data: {
-                    data: {
-                        dicts: {
-                            datas: [data.values]
-                        }
-                    }
-                },
-                success: function(result) {
+                url: ctp + '/menu',
+                method: 'post',
+                data: data.values,
+                success: function (result) {
                     if (result.success) {
                         me.toggleShow('newShow');
                         me.refs.table.fetchData();
@@ -107,17 +100,41 @@ class Crud extends React.Component {
         });
     }
 
-    showNewDialog() {
-        this.setState({
-            newShow: true,
-            editValues: {}
-        });
+    showDialog(key) {
+        let me = this;
+        let obj = {};
+        obj[key] = !me.state[key];
+        obj['editValues'] = {};
+        me.setState(obj);
+    }
+
+    handleDeleteOk() {
+        let me = this;
+        console.log(me);
+    }
+
+    handleDeleteCancel() {
+        let me = this;
+        me.toggleShow('delShow');
+        me.refs.delDialog.resetValues();
     }
 
     render() {
         let me = this;
 
-        let columns = me.props.columns;
+        let columns = [
+            {dataKey: 'menuId', title: 'ID', width: 50, hidden: true},
+            {dataKey: 'menuName', title: '菜单名称', width: 200, ordered: true},
+            {dataKey: 'menuUrl', title: 'URL地址', width: 150, ordered: true},
+            {
+                dataKey: 'menuPerm', title: '权限', width: 100, type: 'action',
+                actions: {
+                    '编辑': function (rowData, actions) {
+                        me.showEditDialog(rowData);
+                    }
+                }
+            }
+        ];
 
         let tableProps = {
             width: 1000,
@@ -125,59 +142,59 @@ class Crud extends React.Component {
             jsxcolumns: columns,
             fetchParams: me.state.fetchParams,
             actionBar: {
-                '新增': function() {
-                    me.showNewDialog();
+                '新增': function () {
+                    me.showDialog('newShow');
                 },
-                '删除': function() {
+                '删除': function () {
                     console.log(me.selected);
+                    me.showDialog('delShow');
                 }
             },
             rowSelection: {
-                onSelect: function(record, selected, selectedRows) {
+                onSelect: function (record, selected, selectedRows) {
                     me.selected = selectedRows;
                 },
-                onSelectAll: function(selected, selectedRows) {
+                onSelectAll: function (selected, selectedRows) {
                     me.selected = selectedRows;
                 }
             }
         };
 
-        let form = <Form className="demoForm" jsxvalues={me.state.editValues} ref="editForm">
+        let form = <Form className="" jsxvalues={me.state.editValues} ref="editForm">
             <FormRow>
-                <InputFormField jsxlabel="国家" jsxname="country" jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
-                <InputFormField jsxname="id" jsxshow={false}/>
+                <InputFormField jsxlabel="菜单名称" jsxname="menuName"
+                                jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
+                <InputFormField jsxname="menuId" jsxshow={false}/>
             </FormRow>
             <FormRow>
-                <InputFormField jsxlabel="城市" jsxname="city" jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
-                <InputFormField jsxlabel="email" jsxname="email" jsxrules={
-                    [
-                        {validator: Validators.isNotEmpty, errMsg: "非空"},
-                        {validator: Validators.isEmail, errMsg: "请输入正确的 email 地址"}
-                    ]
-                }/>
-            </FormRow>
-            <FormRow>
-                <InputFormField jsxlabel="FirstName" jsxname="firstName" jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
-                <InputFormField jsxlabel="LastName" jsxname="lastName" jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
+                <InputFormField jsxlabel="URL地址" jsxname="menuUrl"
+                                jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
+                <InputFormField jsxlabel="权限" jsxname="menuPerm"
+                                jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
             </FormRow>
         </Form>;
 
         return (
             <div className="page-demo3">
+                <Dialog ref="delDialog" width={1000} visible={me.state.delShow} title="确认删除？"
+                        onOk={me.handleDeleteOk.bind(me)} onCancel={me.handleDeleteCancel.bind(me)}>
+                </Dialog>
                 <h2>增删改查</h2>
                 <Form ref="searchForm" className="searchForm">
                     <FormRow>
-                        <InputFormField jsxname="menuName" jsxshowLabel={false} jsxplaceholder="输入菜单名称字进行查询" />
+                        <InputFormField jsxname="menuName" jsxshowLabel={false} jsxplaceholder="输入菜单名称字进行查询"/>
                         <OtherFormField className="searchButton">
                             <Button onClick={me.handleSearch.bind(me)}>查询</Button>
                         </OtherFormField>
                     </FormRow>
                 </Form>
                 <Table {...tableProps} ref="table"/>
-                <Dialog ref="editDialog" width={800} visible={me.state.editShow} title="数据编辑" onOk={me.handleEditOk.bind(me)} onCancel={me.handleEditCancel.bind(me)}>
+                <Dialog ref="editDialog" width={800} visible={me.state.editShow} title="数据编辑"
+                        onOk={me.handleEditOk.bind(me)} onCancel={me.handleEditCancel.bind(me)}>
                     {form}
                 </Dialog>
-                <Dialog ref="newDialog" width={1000} visible={me.state.newShow} title="数据编辑" onOk={me.handleNewOk.bind(me)} onCancel={me.handleNewCancel.bind(me)}>
+                <Dialog ref="newDialog" width={1000} visible={me.state.newShow} title="数据新增"
+                        onOk={me.handleNewOk.bind(me)} onCancel={me.handleNewCancel.bind(me)}>
                     {form}
                 </Dialog>
             </div>
@@ -186,13 +203,4 @@ class Crud extends React.Component {
 
 }
 
-ReactDOM.render( <Crud columns={[
-    { dataKey: 'menuId', title: 'ID', width: 50,hidden:true},
-    { dataKey: 'menuName', title:'菜单名称', width: 200, ordered:true },
-    { dataKey: 'menuUrl',title:'地址', width: 150, ordered:true },
-    { dataKey: 'menuPerm', title: '权限', width: 100, type: 'action', actions: {
-        '编辑': function(rowData, actions) {
-            me.showEditDialog(rowData);
-        }
-    }}
-]}/> , document.getElementsByClassName('site-content')[0]);
+ReactDOM.render(<Crud/>, document.getElementsByClassName('site-content')[0]);

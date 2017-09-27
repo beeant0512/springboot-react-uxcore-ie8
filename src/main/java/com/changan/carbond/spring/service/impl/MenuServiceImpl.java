@@ -5,6 +5,7 @@ import com.changan.carbond.common.BaseServiceImpl;
 import com.changan.carbond.common.IBaseDao;
 import com.changan.carbond.common.Msg;
 import com.changan.carbond.common.enums.EnError;
+import com.changan.carbond.common.utils.IdWorker;
 import com.changan.carbond.spring.mapper.MenuMapper;
 import com.changan.carbond.spring.model.Menu;
 import com.changan.carbond.spring.service.IMenuService;
@@ -29,7 +30,9 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu> implements IMenuServi
 
     @Override
     public void setDefaults(Menu record) {
-
+        if(record.getMenuId() == null){
+            record.setMenuId(IdWorker.getId());
+        }
     }
 
     @Override
