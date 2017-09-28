@@ -6,10 +6,7 @@ import com.changan.carbond.common.IBaseService;
 import com.changan.carbond.common.Msg;
 import com.changan.carbond.common.enums.EnError;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public abstract class BaseController<T extends BaseModelObject> {
@@ -18,7 +15,7 @@ public abstract class BaseController<T extends BaseModelObject> {
 
     public abstract String getViewFolder();
 
-    @RequestMapping(value = {"","index"})
+    @RequestMapping(value = {"", "index"})
     public String index() {
         return getViewFolder() + "/index";
     }
@@ -33,6 +30,12 @@ public abstract class BaseController<T extends BaseModelObject> {
     @ResponseBody
     public Msg<Boolean> delete(@PathVariable String id) {
         return getBaseService().deleteByPrimaryKey(id);
+    }
+
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    @ResponseBody
+    public Msg<Integer> delete(String[] id) {
+        return getBaseService().batchDeleteByPrimaryKey(id);
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)

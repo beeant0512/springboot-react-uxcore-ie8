@@ -110,13 +110,22 @@ class Crud extends React.Component {
 
     handleDeleteOk() {
         let me = this;
-        console.log(me.selected);
+        let selectedItems = me.selected;
+        let keys = [];
+        selectedItems.forEach(function (value, index, array) {
+            keys.push(value.menuId);
+        });
+        console.log(keys);
         $.ajax({
-            url: ctp + "/menu",
-            method: 'delete',
-            data: me.selected,
+            url: ctp + "/menu/delete",
+            method: 'post',
+            traditional: true,
+            data: {id: keys},
             success: function (res) {
                 if (res.success) {
+                    selectedItems.forEach(function(value){
+                        me.refs.table.delRow(value);
+                    });
                     me.toggleShow('delShow');
                 }
             }

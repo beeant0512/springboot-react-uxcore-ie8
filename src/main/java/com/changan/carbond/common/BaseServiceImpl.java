@@ -198,7 +198,7 @@ public abstract class BaseServiceImpl<T extends BaseModelObject> implements IBas
     public Msg<Integer> batchDeleteByPrimaryKey(String[] keys) {
         Msg<Integer> msg = new Msg<>();
         if (null == keys || 0 == keys.length) {
-            msg.setResult(EnError.INSERT_NONE);
+            msg.setResult(EnError.DELETE_NONE);
             return msg;
         }
         int result = getRepositoryDao().batchDeleteByPrimaryKey(keys);
