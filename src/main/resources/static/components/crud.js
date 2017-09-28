@@ -22,7 +22,7 @@ class Crud extends React.Component {
             editShow: false,
             newShow: false,
             delShow: false,
-            editValues: null
+            editValues: null,
         }
     }
 
@@ -110,13 +110,22 @@ class Crud extends React.Component {
 
     handleDeleteOk() {
         let me = this;
-        console.log(me);
+        console.log(me.selected);
+        $.ajax({
+            url: ctp + "/menu",
+            method: 'delete',
+            data: me.selected,
+            success: function (res) {
+                if (res.success) {
+                    me.toggleShow('delShow');
+                }
+            }
+        })
     }
 
     handleDeleteCancel() {
         let me = this;
         me.toggleShow('delShow');
-        me.refs.delDialog.resetValues();
     }
 
     render() {
@@ -146,7 +155,6 @@ class Crud extends React.Component {
                     me.showDialog('newShow');
                 },
                 '删除': function () {
-                    console.log(me.selected);
                     me.showDialog('delShow');
                 }
             },
@@ -176,10 +184,7 @@ class Crud extends React.Component {
 
         return (
             <div className="page-demo3">
-                <Dialog ref="delDialog" width={1000} visible={me.state.delShow} title="确认删除？"
-                        onOk={me.handleDeleteOk.bind(me)} onCancel={me.handleDeleteCancel.bind(me)}>
-                </Dialog>
-                <h2>增删改查</h2>
+                <h2>菜单管理</h2>
                 <Form ref="searchForm" className="searchForm">
                     <FormRow>
                         <InputFormField jsxname="menuName" jsxshowLabel={false} jsxplaceholder="输入菜单名称字进行查询"/>
@@ -189,13 +194,16 @@ class Crud extends React.Component {
                     </FormRow>
                 </Form>
                 <Table {...tableProps} ref="table"/>
-                <Dialog ref="editDialog" width={800} visible={me.state.editShow} title="数据编辑"
+                <Dialog ref="editDialog" width={1000} visible={me.state.editShow} title="数据编辑"
                         onOk={me.handleEditOk.bind(me)} onCancel={me.handleEditCancel.bind(me)}>
                     {form}
                 </Dialog>
                 <Dialog ref="newDialog" width={1000} visible={me.state.newShow} title="数据新增"
                         onOk={me.handleNewOk.bind(me)} onCancel={me.handleNewCancel.bind(me)}>
                     {form}
+                </Dialog>
+                <Dialog ref="delDialog" width={1000} visible={me.state.delShow} title="确认删除？"
+                        onOk={me.handleDeleteOk.bind(me)} onCancel={me.handleDeleteCancel.bind(me)}>
                 </Dialog>
             </div>
         )
