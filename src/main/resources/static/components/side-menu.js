@@ -74,6 +74,4 @@ class LeftSideMenu extends React.Component {
         </Menu>)
     }
 }
-
-ReactDOM.render(<LeftSideMenu url={ctp + '/menu/tree'} text={'menuName'}
-                              id={'menuId'}/>, document.getElementsByClassName('left-side-menu')[0]);
+export default LeftSideMenu;

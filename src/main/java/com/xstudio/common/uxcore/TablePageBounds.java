@@ -1,8 +1,11 @@
 package com.xstudio.common.uxcore;
 
+import com.github.miemiedev.mybatis.paginator.domain.Order;
 import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xiaobiao
@@ -14,6 +17,10 @@ public class TablePageBounds implements Serializable {
     private Integer pageSize;
 
     private Integer currentPage;
+
+    private String orderColumn;
+
+    private String orderType;
 
     public Integer getPageSize() {
         return pageSize;
@@ -31,6 +38,22 @@ public class TablePageBounds implements Serializable {
         this.currentPage = currentPage;
     }
 
+    public String getOrderColumn() {
+        return orderColumn;
+    }
+
+    public void setOrderColumn(String orderColumn) {
+        this.orderColumn = orderColumn;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
     public PageBounds getPageBounds() {
         PageBounds pageBounds = new PageBounds();
         if (null != pageSize) {
@@ -39,6 +62,12 @@ public class TablePageBounds implements Serializable {
 
         if (null != currentPage) {
             pageBounds.setPage(currentPage);
+        }
+
+        if (null != orderColumn && null != orderType) {
+            List<Order> orders = new ArrayList<>();
+            orders.add(new Order(orderColumn, Order.Direction.valueOf(orderType.toUpperCase()), ""));
+            pageBounds.setOrders(orders);
         }
 
         pageBounds.setContainsTotalCount(true);
