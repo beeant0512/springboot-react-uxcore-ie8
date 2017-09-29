@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.changan.carbond.spring.mapper.UserMapper">
-    <resultMap id="appUserDetailsMap" type="com.changan.carbond.common.AppUserDetails">
+<mapper namespace="com.xstudio.spring.mapper.UserMapper">
+    <resultMap id="appUserDetailsMap" type="com.xstudio.common.AppUserDetails">
         <id property="userId" column="user_id"/>
         <result property="password" column="user_password"/>
         <result property="username" column="user_name"/>
