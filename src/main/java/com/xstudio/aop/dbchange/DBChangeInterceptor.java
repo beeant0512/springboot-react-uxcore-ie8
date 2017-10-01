@@ -70,7 +70,7 @@ public class DBChangeInterceptor implements Interceptor {
                 }
             }
         }
-        return sql.replaceAll("\'","`");
+        return sql;
     }
 
     private static String getParameterValue(Object obj) {
@@ -118,7 +118,7 @@ public class DBChangeInterceptor implements Interceptor {
         BoundSql boundSql = handler.getBoundSql();
         //记录SQL
         String sql = showSql(configuration, boundSql);
-        logger.info("\"" + sql + "\"");
+        logger.info(sql);
         if (sql.trim().startsWith("update")) {
             SqlLog sqlLog = new SqlLog();
             sqlLog.setMethod("update");
@@ -127,7 +127,6 @@ public class DBChangeInterceptor implements Interceptor {
             sqlLog.setStatment(sql);
             SqlLogServiceImpl sqlLogService = ContextUtil.getBean(SqlLogServiceImpl.class);
             sqlLogService.insertSelective(sqlLog);
-            logger.debug(sql);
         }
     }
 

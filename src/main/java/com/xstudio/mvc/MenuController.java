@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -39,11 +40,11 @@ public class MenuController extends BaseController<Menu> {
         return menuService.getTree();
     }
 
-    @RequestMapping(value = {"table"})
+    @RequestMapping("treeTable")
     @ResponseBody
-    public TableResponse<Menu> table(Menu menu, TablePageBounds tablePageBounds) {
-        Msg<PageList<Menu>> pageListMsg = menuService.fuzzySearchByPager(menu, tablePageBounds.getPageBounds());
-
+    public TableResponse<MenuVo> treeTable(Menu menu, TablePageBounds tablePageBounds){
+        Msg<PageList<MenuVo>> pageListMsg = menuService.fuzzySearchVoByPager(menu, tablePageBounds.getPageBounds());
+        pageListMsg.getData().get(0).setData(new ArrayList<>());
         return new TableResponse<>(pageListMsg);
     }
 }

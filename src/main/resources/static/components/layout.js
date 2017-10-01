@@ -16,5 +16,4 @@ class MainLayout extends React.Component {
         </div>
     }
 }
-
-ReactDOM.render(<MainLayout/>, document.getElementById('main-body'));
+export default MainLayout;

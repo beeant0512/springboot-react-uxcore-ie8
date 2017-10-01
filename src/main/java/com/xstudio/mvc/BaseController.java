@@ -1,9 +1,12 @@
 package com.xstudio.mvc;
 
 
+import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.xstudio.common.BaseModelObject;
 import com.xstudio.common.IBaseService;
 import com.xstudio.common.Msg;
+import com.xstudio.common.uxcore.TablePageBounds;
+import com.xstudio.common.uxcore.TableResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,5 +53,12 @@ public abstract class BaseController<T extends BaseModelObject> {
     @ResponseBody
     public Msg<T> put(T record, @PathVariable String id) {
         return getBaseService().updateByPrimaryKeySelective(record);
+    }
+
+    @RequestMapping(value = {"table"})
+    @ResponseBody
+    public TableResponse<T> table(T menu, TablePageBounds tablePageBounds) {
+        Msg<PageList<T>> pageListMsg = getBaseService().fuzzySearchByPager(menu, tablePageBounds.getPageBounds());
+        return new TableResponse<>(pageListMsg);
     }
 }

@@ -1,4 +1,6 @@
 let Menu = require('uxcore-menu');
+let MenuTable = require('./menu-table');
+let UserTable = require('./user-table');
 let SubMenu = Menu.SubMenu;
 let MenuItem = Menu.Item;
 
@@ -24,13 +26,23 @@ class LeftSideMenu extends React.Component {
     }
 
     handleClick(e) {
+        let selectedMenu = e.item.props.item;
         this.setState({
             current: e.key,
             openKeys: e.keyPath.slice(1)
         });
+        switch (selectedMenu.menuUrl) {
+            case '/menu/', '/menu':
+                ReactDOM.render(<MenuTable/>, document.getElementsByClassName('site-content')[0]);
+                break;
+            case '/user/', '/user':
+                ReactDOM.render(<UserTable/>, document.getElementsByClassName('site-content')[0]);
+                break;
+        }
     }
 
     onToggle(info) {
+        console.log('toggle menu', info);
         this.setState({
             openKeys: info.openKeys
         });
@@ -55,7 +67,7 @@ class LeftSideMenu extends React.Component {
                 {_this.build_menu(item.child)}
             </SubMenu>;
         }
-        return <Menu.Item key={item[_this.props.id]}>
+        return <Menu.Item key={item[_this.props.id]} item={item}>
             <i className="kuma-icon kuma-icon-email"></i>{item[_this.props.text]}</Menu.Item>;
     }
 
@@ -74,4 +86,5 @@ class LeftSideMenu extends React.Component {
         </Menu>)
     }
 }
+
 export default LeftSideMenu;

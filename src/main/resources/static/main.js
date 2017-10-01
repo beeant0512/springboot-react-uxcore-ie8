@@ -32,9 +32,5 @@ let leftSideWidth = 190;
 let MainLayout = require('./components/layout');
 let LeftSideMenu = require('./components/side-menu');
 
-ReactDOM.render(<LeftSideMenu url={ctp + '/menu/tree'} text={'menuName'}
-                              id={'menuId'}/>, document.getElementsByClassName('left-side-menu')[0]);
-require('./components/crud');
-
-// ReactDOM.render(<MainLayout leftSideWidth={leftSideWidth}/>, document.getElementById('main-body'));
-// require('./style/layout');
+ReactDOM.render(<MainLayout/>, document.getElementById('main-body'));
+ReactDOM.render(<LeftSideMenu url={ctp + '/menu/tree'} text={'menuName'} id={'menuId'}/>, document.getElementsByClassName('left-side-menu')[0]);

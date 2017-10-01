@@ -66,4 +66,21 @@ CREATE TABLE `application_user` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+DROP TABLE IF EXISTS `application_sql_log`;
+CREATE TABLE `application_sql_log` (
+  `id` bigint(20) NOT NULL,
+  `method` enum('update','delete','select','create') DEFAULT NULL,
+  `table_name` varchar(255) DEFAULT '',
+  `actor_id` bigint(20) unsigned NOT NULL,
+  `client_ip` char(17) DEFAULT '',
+  `user_agent` varchar(255) DEFAULT '',
+  `server_name` varchar(255) DEFAULT '',
+  `server_port` varchar(255) DEFAULT '',
+  `statment` text,
+  `create_at` datetime NOT NULL,
+  `create_by` bigint(20) unsigned NOT NULL,
+  `update_at` datetime DEFAULT NULL,
+  `update_by` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 SET FOREIGN_KEY_CHECKS = 1;

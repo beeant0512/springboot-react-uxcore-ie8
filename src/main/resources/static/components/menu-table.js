@@ -14,7 +14,7 @@ let {FormRow, InputFormField, OtherFormField, Validators, ButtonGroupFormField, 
  */
 let assign = require('object-assign');
 
-class Crud extends React.Component {
+class MenuTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -115,7 +115,6 @@ class Crud extends React.Component {
         selectedItems.forEach(function (value, index, array) {
             keys.push(value.menuId);
         });
-        console.log(keys);
         $.ajax({
             url: ctp + "/menu/delete",
             method: 'post',
@@ -123,7 +122,7 @@ class Crud extends React.Component {
             data: {id: keys},
             success: function (res) {
                 if (res.success) {
-                    selectedItems.forEach(function(value){
+                    selectedItems.forEach(function (value) {
                         me.refs.table.delRow(value);
                     });
                     me.toggleShow('delShow');
@@ -155,9 +154,9 @@ class Crud extends React.Component {
         ];
 
         let tableProps = {
-            width: 1000,
-            fetchUrl: ctp + "/menu/table",
+            fetchUrl: ctp + "/menu/treeTable",
             jsxcolumns: columns,
+            renderModel: 'tree',
             fetchParams: me.state.fetchParams,
             actionBar: {
                 '新增': function () {
@@ -169,11 +168,24 @@ class Crud extends React.Component {
             },
             rowSelection: {
                 onSelect: function (record, selected, selectedRows) {
+                    console.log('selected ',selectedRows);
                     me.selected = selectedRows;
                 },
                 onSelectAll: function (selected, selectedRows) {
+                    console.log('selected ',selectedRows);
                     me.selected = selectedRows;
                 }
+            },
+            renderSubComp:function(rowData){
+              console.log('renderSubComp', rowData);
+            },
+            processData: function (data) {
+                let tableData = me.refs.table.data;
+                if(null != tableData){
+                    console.table(tableData);
+                }
+                console.table(data);
+                return data;
             }
         };
 
@@ -192,7 +204,7 @@ class Crud extends React.Component {
         </Form>;
 
         return (
-            <div className="page-demo3">
+            <div className="site-content-body">
                 <h2>菜单管理</h2>
                 <Form ref="searchForm" className="searchForm">
                     <FormRow>
@@ -220,4 +232,4 @@ class Crud extends React.Component {
 
 }
 
-ReactDOM.render(<Crud/>, document.getElementsByClassName('site-content')[0]);
+export default MenuTable;

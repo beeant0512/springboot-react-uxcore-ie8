@@ -1,3 +1,5 @@
+$leftSideMenuWidth: 190px;
+
 html, body {
   min-height: 100%;
 }
@@ -13,7 +15,7 @@ html, body {
   z-index: 99;
   a {
     color: #fff;
-    :visited{
+    :visited {
       color: #fff;
     }
   }
@@ -35,6 +37,16 @@ html, body {
       padding: 0 25px;
       transition: background-color ease-in .2s;
     }
+  }
+}
+
+.left-side-menu {
+  width: $leftSideMenuWidth;
+}
+
+.site-content {
+  .site-content-body{
+    padding: 10px 15px;
   }
 }
 

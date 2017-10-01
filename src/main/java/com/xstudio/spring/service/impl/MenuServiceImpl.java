@@ -1,6 +1,9 @@
 package com.xstudio.spring.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
+import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.xstudio.common.BaseServiceImpl;
 import com.xstudio.common.IBaseDao;
 import com.xstudio.common.Msg;
@@ -30,7 +33,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu> implements IMenuServi
 
     @Override
     public void setDefaults(Menu record) {
-        if(record.getMenuId() == null){
+        if (record.getMenuId() == null) {
             record.setMenuId(IdWorker.getId());
         }
     }
@@ -59,7 +62,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu> implements IMenuServi
         MenuVo menuVo;
         for (Menu menu : list) {
             menuVo = JSON.parseObject(JSON.toJSONString(menu), MenuVo.class);
-            menuVo.setChild(new ArrayList<>());
+            menuVo.setData(new ArrayList<>());
             menuMap.put(menu.getMenuId(), menuVo);
         }
 
@@ -68,7 +71,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu> implements IMenuServi
 
         for (Map.Entry<Long, MenuVo> menu : menuMap.entrySet()) {
             if (menu.getValue().getParentMenuId() != 0) {
-                menuMap.get(menu.getValue().getParentMenuId()).getChild().add(menu.getValue());
+                menuMap.get(menu.getValue().getParentMenuId()).getData().add(menu.getValue());
             } else {
                 topMenuList.add(menu.getValue());
             }
@@ -76,5 +79,13 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu> implements IMenuServi
 
         msg.setData(topMenuList);
         return msg;
+    }
+
+    @Override
+    public Msg<PageList<MenuVo>> fuzzySearchVoByPager(Menu menu, PageBounds pageBounds) {
+        Msg<PageList<Menu>> pageListMsg = super.fuzzySearchByPager(menu, pageBounds);
+        Msg<PageList<MenuVo>> listMsg = new Msg<>();
+        listMsg = JSON.parseObject(JSON.toJSONString(pageListMsg), new TypeReference<Msg<PageList<MenuVo>>>(){});
+        return listMsg;
     }
 }
