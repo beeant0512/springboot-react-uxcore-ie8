@@ -168,24 +168,11 @@ class MenuTable extends React.Component {
             },
             rowSelection: {
                 onSelect: function (record, selected, selectedRows) {
-                    console.log('selected ',selectedRows);
                     me.selected = selectedRows;
                 },
                 onSelectAll: function (selected, selectedRows) {
-                    console.log('selected ',selectedRows);
                     me.selected = selectedRows;
                 }
-            },
-            renderSubComp:function(rowData){
-              console.log('renderSubComp', rowData);
-            },
-            processData: function (data) {
-                let tableData = me.refs.table.data;
-                if(null != tableData){
-                    console.table(tableData);
-                }
-                console.table(data);
-                return data;
             }
         };
 

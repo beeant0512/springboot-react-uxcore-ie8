@@ -1,10 +1,13 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.6.RELEASE'
+        springBootVersion = '2.0.0.M4'
     }
     repositories {
-        maven { url "http://maven.aliyun.com/nexus/content/groups/public"}
-        maven { url "http://172.16.1.188:8082/content/groups/public" }
+        mavenCentral()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+//        maven { url "http://172.16.1.188:8082/content/groups/public" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -14,13 +17,17 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-    maven { url "http://maven.aliyun.com/nexus/content/groups/public"}
-    maven { url "http://172.16.1.188:8082/content/groups/public" }
+    mavenCentral()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+//    maven { url "http://172.16.1.188:8082/content/groups/public" }
 }
 
 configurations.all {
@@ -34,33 +41,39 @@ configurations.all {
 
 dependencies {
     compile group: 'org.apache.directory.studio', name: 'org.apache.commons.collections', version: '3.2.1'
+    compile('org.springframework.boot:spring-boot-starter-actuator:2.0.0.M4')
+    compile('org.springframework.boot:spring-boot-starter-aop:2.0.0.M4')
+    compile('org.springframework.boot:spring-boot-starter-cache:2.0.0.M4')
+    compile('org.springframework.boot:spring-boot-starter-security:2.0.0.M4')
+    // compile('org.springframework.session:spring-session-core')
+    compile('org.springframework.boot:spring-boot-starter-thymeleaf:2.0.0.M4')
+    compile('org.springframework.boot:spring-boot-starter-validation:2.0.0.M4')
+    compile('org.springframework.boot:spring-boot-starter-web:2.0.0.M4')
+    runtime('org.springframework.boot:spring-boot-devtools:2.0.0.M4')
+    compileOnly('org.springframework.boot:spring-boot-configuration-processor:2.0.0.M4')
+    testCompile('org.springframework.boot:spring-boot-starter-test:2.0.0.M4')
+    testCompile('org.springframework.security:spring-security-test:5.0.0.M4')
+//    compile('org.yaml:snakeyaml:1.18')
 
-    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile("org.springframework.boot:spring-boot-starter-aop")
-
-    compile("org.springframework.boot:spring-boot-starter-websocket")
-    compile("org.webjars:webjars-locator")
+    compile("org.springframework.boot:spring-boot-starter-websocket:2.0.0.M4")
+    compile("org.webjars:webjars-locator:0.32-1")
     compile("org.webjars:sockjs-client:1.0.2")
     compile("org.webjars:stomp-websocket:2.3.3")
     compile("org.webjars:bootstrap:3.3.7")
     compile("org.webjars:jquery:3.1.0")
 
-    compile("org.springframework.boot:spring-boot-starter-security")
 //    compile("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    compile('org.springframework.boot:spring-boot-starter-actuator')
+    // yml 配置读取
+    compile("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.1")
 
-    compile('org.springframework.boot:spring-boot-starter-log4j2')
-    compile('org.slf4j:log4j-over-slf4j')   // 把log4j的日志输出重定向到slf4j进行输出
+    compile('org.springframework.boot:spring-boot-starter-log4j2:2.0.0.M4')
+//    compile('org.slf4j:log4j-over-slf4j')   // 把log4j的日志输出重定向到slf4j进行输出
 
-    compile("mysql:mysql-connector-java")
-    compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.2.0')
+    runtime('mysql:mysql-connector-java:5.1.44')
+    compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.1')
     compile('com.github.miemiedev:mybatis-paginator:1.2.17')
     compile('com.alibaba:druid:1.0.28')
 
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.24'
-
-
-    testCompile('org.springframework.boot:spring-boot-starter-test')
 }

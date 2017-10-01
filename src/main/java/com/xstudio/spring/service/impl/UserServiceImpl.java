@@ -8,7 +8,6 @@ import com.xstudio.common.utils.IdWorker;
 import com.xstudio.spring.mapper.UserMapper;
 import com.xstudio.spring.model.User;
 import com.xstudio.spring.service.IUserService;
-import org.codehaus.groovy.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;

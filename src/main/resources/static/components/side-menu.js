@@ -31,13 +31,15 @@ class LeftSideMenu extends React.Component {
             current: e.key,
             openKeys: e.keyPath.slice(1)
         });
-        switch (selectedMenu.menuUrl) {
-            case '/menu/', '/menu':
-                ReactDOM.render(<MenuTable/>, document.getElementsByClassName('site-content')[0]);
-                break;
-            case '/user/', '/user':
-                ReactDOM.render(<UserTable/>, document.getElementsByClassName('site-content')[0]);
-                break;
+        if(selectedMenu.data){
+            switch (selectedMenu.menuUrl) {
+                case '/menu/', '/menu':
+                    ReactDOM.render(<MenuTable/>, document.getElementsByClassName('site-content')[0]);
+                    break;
+                case '/user/', '/user':
+                    ReactDOM.render(<UserTable/>, document.getElementsByClassName('site-content')[0]);
+                    break;
+            }
         }
     }
 

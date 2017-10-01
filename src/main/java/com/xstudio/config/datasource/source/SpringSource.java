@@ -30,7 +30,7 @@ import java.util.Properties;
  */
 
 @Configuration
-@MapperScan(annotationClass = Mapper.class, basePackages = {"com.xstudio.carbond.spring.mapper"}, sqlSessionFactoryRef = "springSqlSessionFactory")
+@MapperScan(annotationClass = Mapper.class, basePackages = {"com.xstudio.spring.mapper"}, sqlSessionFactoryRef = "springSqlSessionFactory")
 public class SpringSource {
     private static final Logger logger = LoggerFactory.getLogger(SpringSource.class);
 
@@ -51,7 +51,7 @@ public class SpringSource {
     @Bean(name = "springSqlSessionFactory")
     @Primary
     public SqlSessionFactory springSqlSessionFactory(@Qualifier("springDataSource") DruidDataSource dataSource) throws Exception {
-        mybatisConfiguration.setTypeAliasesPackage("com.xstudio.carbond.spring.model");
+        mybatisConfiguration.setTypeAliasesPackage("com.xstudio.spring.model");
         mybatisConfiguration.setMapperLocations(new String[]{"classpath*:mybatis/mysql/spring/**/*.xml"});
         Interceptor[] interceptors = new Interceptor[]{mysqlInterceptor(), dbChangeInterceptor()};
 //        Interceptor[] interceptors = new Interceptor[]{mysqlInterceptor()};

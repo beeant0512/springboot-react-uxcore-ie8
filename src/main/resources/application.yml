@@ -1,6 +1,7 @@
 server:
   port: 8082
-  context-path: /srui
+  servlet:
+    context-path: /srui
 spring:
   jpa:
     hibernate:
@@ -18,8 +19,9 @@ spring:
       # Validate the connection before borrowing it from the pool.
       test-on-borrow: true
   thymeleaf:
-    mode: HTML5
+    mode: HTML
     cache: false
+
 
 ## mybatis ##
 mybatis:
@@ -28,7 +30,12 @@ mybatis:
   executorType: simple
 logging:
   level:
-    ROOT: debug
-    org:
-      springframework: info
-#  config: classpath:log4j2.yml
+    ROOT: info
+  config: classpath:log4j2.yml
+
+endpoints:
+  autoconfig:
+    enabled: true
+    web:
+      enabled: true
+

@@ -1,0 +1,53 @@
+Configuration:
+  Properties: # 定义全局变量
+    Property: # 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下：
+      - name: log.level.console
+        value: trace
+      - name: log.path
+        value: /logs
+      - name: project.name
+        value: springboot-react-uxcore-ie8
+  Appenders:
+    Console:
+      name: CONSOLE
+      target: SYSTEM_OUT
+      PatternLayout:
+        Pattern: "%highlight{%d{yyyy-MM-dd HH:mm:ss.SSS} [%5t] [%5p] %40.40c{1.} %4L: %m%n%xwEx} "
+    RollingFile:
+      - name: ROLLING_FILE
+        ignoreExceptions: false
+        fileName: ${log.path}/${project.name}.log
+        filePattern: "${log.path}/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log"
+        PatternLayout:
+          pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%5t] [%5p] %40.40c{1.} %4L: %m%n%xwEx"
+        Policies:
+          TimeBasedTriggeringPolicy:
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:
+          max: 1000
+      - name: SQL
+        ignoreExceptions: false
+        fileName: ${log.path}/${project.name}-SQL.log
+        filePattern: "${log.path}/$${date:yyyy-MM}/${project.name}-SQL-%d{yyyy-MM-dd}-%i.log"
+        PatternLayout:
+          pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%5t] [%5p] %40.40c{1.} %4L: %m%n%xwEx"
+        Policies:
+          TimeBasedTriggeringPolicy:
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:
+          max: 1000
+  Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        - ref: CONSOLE
+        - ref: ROLLING_FILE
+    Logger:
+      # 数据库日志
+      - name: o.s.j
+        additivity: false
+        AppenderRef:
+          - ref: CONSOLE
+          - ref: SQL

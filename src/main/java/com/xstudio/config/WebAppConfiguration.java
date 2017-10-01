@@ -6,26 +6,29 @@ import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * WebMVC 配置
- *
- * Created by xiaobiao on 2017/3/2.
+ * <p>
+ * Created by xiaobiao on 2017/10/1.
  */
 @Configuration
-public class WebAppConfiguration extends WebMvcConfigurerAdapter {
-
+@EnableWebMvc
+public class WebAppConfiguration implements WebMvcConfigurer {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        super.configureMessageConverters(converters);
-
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
         fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
@@ -41,46 +44,11 @@ public class WebAppConfiguration extends WebMvcConfigurerAdapter {
         converter.setSupportedMediaTypes(fastMediaTypes);
         converter.setFastJsonConfig(fastJsonConfig);
 
-
         converters.add(converter);
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        List<StaticResource> staticResources = staticResources();
-        for (StaticResource staticResource : staticResources) {
-            registry.addResourceHandler(staticResource.getPathPattern()).addResourceLocations(staticResource.getResourceLocations());
-        }
-        super.addResourceHandlers(registry);
-    }
-
-    private List<StaticResource> staticResources() {
-        List<StaticResource> staticResources = new ArrayList<>();
-        staticResources.add(new StaticResource("/static/**","classpath:/static/"));
-        return staticResources;
-    }
-
-    public class StaticResource {
-        private String pathPattern;
-
-        private String[] resourceLocations;
-
-        public StaticResource(String pathPattern, String resourceLocations) {
-            this.pathPattern = pathPattern;
-            this.resourceLocations = new String[]{resourceLocations};
-        }
-
-        public StaticResource(String pathPattern, String[] resourceLocations) {
-            this.pathPattern = pathPattern;
-            this.resourceLocations = resourceLocations;
-        }
-
-        public String getPathPattern() {
-            return pathPattern;
-        }
-
-        public String[] getResourceLocations() {
-            return resourceLocations;
-        }
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 }

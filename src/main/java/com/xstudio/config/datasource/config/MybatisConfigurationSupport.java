@@ -1,5 +1,7 @@
 package com.xstudio.config.datasource.config;
 
+import org.apache.ibatis.logging.log4j2.Log4j2Impl;
+import org.apache.ibatis.logging.slf4j.Slf4jImpl;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.Configuration;
@@ -55,6 +57,8 @@ public class MybatisConfigurationSupport {
             Configuration configuration = new Configuration();
             BeanUtils.copyProperties(mybatisProperties.getConfiguration(), configuration);
             configuration.setDefaultExecutorType(mybatisProperties.getExecutorType());
+            // log
+            configuration.setLogImpl(Slf4jImpl.class);
             sqlSessionFactoryBean.setConfiguration(configuration);
         }
         if (mybatisProperties.getConfigurationProperties() != null) {
@@ -75,7 +79,6 @@ public class MybatisConfigurationSupport {
         if (!ObjectUtils.isEmpty(mybatisProperties.resolveMapperLocations())) {
             sqlSessionFactoryBean.setMapperLocations(mybatisProperties.resolveMapperLocations());
         }
-
         return sqlSessionFactoryBean.getObject();
     }
 }
