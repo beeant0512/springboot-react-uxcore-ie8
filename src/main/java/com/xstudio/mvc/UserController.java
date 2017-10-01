@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("user")
 public class UserController extends BaseController<User> {
 
@@ -25,10 +26,5 @@ public class UserController extends BaseController<User> {
     @Override
     public IBaseService getBaseService() {
         return userService;
-    }
-
-    @Override
-    public String getViewFolder() {
-        return "user";
     }
 }

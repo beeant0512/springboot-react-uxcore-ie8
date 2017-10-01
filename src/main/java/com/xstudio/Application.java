@@ -8,12 +8,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@EnableAutoConfiguration
-@ComponentScan
+@SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan
 public class Application {
 
     public static void main(String[] args) {
+        System.setProperty("spring.devtools.restart.enabled", "false");
         ConfigurableApplicationContext cac = SpringApplication.run(Application.class, args);
         ContextUtil.setContext(cac);
     }

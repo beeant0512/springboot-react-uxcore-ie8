@@ -1,41 +1,33 @@
 server:
-  port: 8082
-  servlet:
-    context-path: /srui
+  port: 8080
+  context-path: /srui
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
   datasource:
     url: jdbc:mysql://localhost:3306/spring?useUnicode=true&characterEncoding=utf-8
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
-    tomcat:
-      # Number of ms to wait before throwing an exception if no connection is available.
-      max-wait: 10000
-      # Maximum number of active connections that can be allocated from this pool at the same time.
-      max-active: 50
-      # Validate the connection before borrowing it from the pool.
-      test-on-borrow: true
+  devtools:
+    restart:
+      exclude: static/**
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
   thymeleaf:
     mode: HTML
     cache: false
-
 
 ## mybatis ##
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
   executorType: simple
+## logging ##
 logging:
   level:
     ROOT: info
   config: classpath:log4j2.yml
 
 endpoints:
-  autoconfig:
+  actuator:
     enabled: true
-    web:
-      enabled: true
-

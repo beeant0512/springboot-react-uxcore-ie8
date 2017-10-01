@@ -63,10 +63,10 @@ class LeftSideMenu extends React.Component {
 
     createMenuItem(item) {
         let _this = this;
-        if (item.child !== undefined && item.child.length > 0) {
+        if (item.data !== undefined && item.data.length > 0) {
             return <SubMenu key={item[_this.props.id]} title={
                 <span><i className="kuma-icon kuma-icon-email"></i><span>{item[_this.props.text]}</span></span>}>
-                {_this.build_menu(item.child)}
+                {_this.build_menu(item.data)}
             </SubMenu>;
         }
         return <Menu.Item key={item[_this.props.id]} item={item}>

@@ -8,22 +8,12 @@ import com.xstudio.common.Msg;
 import com.xstudio.common.uxcore.TablePageBounds;
 import com.xstudio.common.uxcore.TableResponse;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 public abstract class BaseController<T extends BaseModelObject> {
 
     public abstract IBaseService getBaseService();
-
-    public abstract String getViewFolder();
-
-    @RequestMapping(value = {"", "index"})
-    public String index() {
-        return getViewFolder() + "/index";
-    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
