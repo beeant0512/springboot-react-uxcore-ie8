@@ -1,6 +1,6 @@
 let webpack = require('webpack');
 let path = require('path');
-
+let CleanWebpackPlugin = require('clean-webpack-plugin');
 let LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
 const extractSass = new ExtractTextPlugin("./css/style.css");
@@ -31,6 +31,11 @@ module.exports = {
     debug: true,
     devtool: 'source-map',
     plugins: [
+        new CleanWebpackPlugin(['build'], {
+            root: staticFilesPath,
+            verbose: true,
+            dry: false,
+        }),
         new webpack.optimize.CommonsChunkPlugin("common.js", ["main", "login"]),
         new webpack.ProvidePlugin({
             $: "jquery",
