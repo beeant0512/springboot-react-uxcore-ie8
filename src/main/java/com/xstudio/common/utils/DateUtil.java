@@ -29,6 +29,10 @@ public class DateUtil {
     public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss.S";
     private static Logger logger = LoggerFactory.getLogger(DateUtil.class);
 
+    private DateUtil() {
+        return;
+    }
+
     public static void sleep(Integer seconds) {
         try {
             Thread.sleep((seconds * 1000));

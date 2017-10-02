@@ -62,6 +62,12 @@ html, body {
   }
 }
 
+.search-container {
+  button, div {
+    float: left
+  }
+}
+
 .show {
   -webkit-animation: fadeIn .2s ease-in-out;
   animation: fadeIn .2s ease-in-out;

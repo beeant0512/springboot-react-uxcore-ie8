@@ -50,9 +50,19 @@ class MenuTable extends React.Component {
         })
     }
 
+    handleAdSearch() {
+        let me = this;
+        let data = me.refs.searchAdForm.getValues();
+        me.setState({
+            fetchParams: data.values
+        }, function () {
+            me.refs.table.fetchData();
+        })
+    }
+
     handleResetClick() {
         let me = this;
-        me.refs.form.resetValues();
+        me.refs.searchAdForm.resetValues();
     }
 
     toggleShow(key) {
@@ -197,7 +207,6 @@ class MenuTable extends React.Component {
                 }
             },
             beforeFetch: function (data, from) {
-                console.log(data);
                 if (data.createAt) {
                     data.createAtBegin = me.formatDate(data.createAt[0], 'yyyy-MM-DD');
                     data.createAtEnd = me.formatDate(data.createAt[1], 'yyyy-MM-DD');
@@ -237,10 +246,8 @@ class MenuTable extends React.Component {
                 <Form ref="searchForm" className="search-form">
                     <FormRow>
                         <InputFormField jsxname="menuName" jsxshowLabel={false} jsxplaceholder="输入菜单名称字进行查询"/>
-                        <OtherFormField className="searchButton" width={50}>
+                        <OtherFormField className="search-container">
                             <Button onClick={me.handleSearch.bind(me)}>查询</Button>
-                        </OtherFormField>
-                        <OtherFormField jsxflex={2}>
                             <div className="updown" onClick={me.handleSearchAdClick.bind(me)}>
                                 <a href="javascript:;">高级查询</a><i className={classnames({
                                 "kuma-icon": true,
@@ -250,6 +257,8 @@ class MenuTable extends React.Component {
                             </div>
                         </OtherFormField>
                     </FormRow>
+                </Form>
+                <Form ref="searchAdForm" className="search-form">
                     <FormRow className={classnames({"hidden": !me.state.showAdSearch, "show": me.state.showAdSearch})}>
                         <InputFormField jsxlabel="菜单名称" jsxname="menuName"/>
                         <InputFormField jsxlabel="菜单权限" jsxname="menuPerm"/>
@@ -257,10 +266,8 @@ class MenuTable extends React.Component {
                     <FormRow className={classnames({"hidden": !me.state.showAdSearch, "show": me.state.showAdSearch})}>
                         <DateFormField jsxlabel="创建日期" jsxname="createAt" jsxtype="cascade" autoMatchWidth={true}
                                        format={'yyyy-MM-DD'}/>
-                    </FormRow>
-                    <FormRow className={classnames({"hidden": !me.state.showAdSearch, "show": me.state.showAdSearch})}>
                         <OtherFormField className="searchButton">
-                            <Button type="primary" onClick={me.handleSearch.bind(me)}>提交</Button>
+                            <Button type="primary" onClick={me.handleAdSearch.bind(me)}>提交</Button>
                             <Button type="secondary" onClick={me.handleResetClick.bind(me)}>重置</Button>
                         </OtherFormField>
                     </FormRow>

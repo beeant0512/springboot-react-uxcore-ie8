@@ -21,7 +21,7 @@ public class DateFormatter implements Formatter<Date> {
     private static final Map<DateTimeFormat.ISO, String> ISO_PATTERNS;
 
     static {
-        Map<DateTimeFormat.ISO, String> formats = new HashMap<DateTimeFormat.ISO, String>(4);
+        Map<DateTimeFormat.ISO, String> formats = new HashMap<>(4);
         formats.put(DateTimeFormat.ISO.DATE, "yyyy-MM-dd");
         formats.put(DateTimeFormat.ISO.TIME, "HH:mm:ss.SSSZ");
         formats.put(DateTimeFormat.ISO.DATE_TIME, "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
@@ -131,6 +131,9 @@ public class DateFormatter implements Formatter<Date> {
 
     @Override
     public Date parse(String text, Locale locale) throws ParseException {
+        if(null == text || "".equals(text)){
+            return null;
+        }
         try {
             getDateFormat(locale).parse(text);
         } catch (Exception e) {
@@ -162,6 +165,7 @@ public class DateFormatter implements Formatter<Date> {
 //        if (StringUtils.hasLength(this.pattern)) {
         switch (this.pattern) {
             case "yyyy-MM-dd HH:mm:ss.S":
+            case "yyyy-MM-dd HH:mm:ss":
                 this.pattern = "yyyy-MM-dd";
                 break;
         }

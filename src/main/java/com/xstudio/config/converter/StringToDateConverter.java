@@ -18,7 +18,7 @@ public class StringToDateConverter extends EmbeddedValueResolutionSupport implem
     private static final Set<Class<?>> FIELD_TYPES;
 
     static {
-        Set<Class<?>> fieldTypes = new HashSet<Class<?>>(4);
+        Set<Class<?>> fieldTypes = new HashSet<>(4);
         fieldTypes.add(Date.class);
         fieldTypes.add(Calendar.class);
         fieldTypes.add(Long.class);

@@ -2,11 +2,13 @@ let Table = require("uxcore-table");
 let Button = require('uxcore-button');
 let Form = require('uxcore-form');
 let Dialog = require('uxcore-dialog');
+let classnames = require("classnames");
+const Formatter = require('uxcore-formatter');
 /*
  * 讲解：从 Form 中取出 Form 的零件用以配置生成一个完整的 Form。
  * Form 的使用文档见：http://uxco.re/components/form/
  */
-let {FormRow, InputFormField, OtherFormField, Validators, ButtonGroupFormField, TableFormField} = Form;
+let {FormRow, InputFormField, OtherFormField, DateFormField, Validators, ButtonGroupFormField, TableFormField} = Form;
 
 /*
  * 讲解：object-assign 是一个非常实用的用于对象拷贝和扩展的函数
@@ -18,12 +20,24 @@ class UserTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            value: {
+                style: 'border',
+                size: 'small',
+            },
+            showAdSearch: false,
             fetchParams: {},
             editShow: false,
             newShow: false,
             delShow: false,
             editValues: null,
         }
+    }
+
+    handleSearchAdClick() {
+        let me = this;
+        me.setState({
+            showAdSearch: !me.state.showAdSearch
+        });
     }
 
     handleSearch() {
@@ -34,6 +48,21 @@ class UserTable extends React.Component {
         }, function () {
             me.refs.table.fetchData();
         })
+    }
+
+    handleAdSearch() {
+        let me = this;
+        let data = me.refs.searchAdForm.getValues();
+        me.setState({
+            fetchParams: data.values
+        }, function () {
+            me.refs.table.fetchData();
+        })
+    }
+
+    handleResetClick() {
+        let me = this;
+        me.refs.searchAdForm.resetValues();
     }
 
     toggleShow(key) {
@@ -90,7 +119,6 @@ class UserTable extends React.Component {
         let me = this;
         me.toggleShow('newShow');
         me.refs.editForm.resetValues();
-
     }
 
     showEditDialog(rowData) {
@@ -115,7 +143,6 @@ class UserTable extends React.Component {
         selectedItems.forEach(function (value, index, array) {
             keys.push(value.menuId);
         });
-        console.log(keys);
         $.ajax({
             url: ctp + "/user/delete",
             method: 'post',
@@ -123,7 +150,7 @@ class UserTable extends React.Component {
             data: {id: keys},
             success: function (res) {
                 if (res.success) {
-                    selectedItems.forEach(function(value){
+                    selectedItems.forEach(function (value) {
                         me.refs.table.delRow(value);
                     });
                     me.toggleShow('delShow');
@@ -135,6 +162,13 @@ class UserTable extends React.Component {
     handleDeleteCancel() {
         let me = this;
         me.toggleShow('delShow');
+    }
+
+    formatDate(value, format) {
+        if (isNaN(value) || value === null) {
+            return value;
+        }
+        return Formatter.date(value, format);
     }
 
     render() {
@@ -149,6 +183,10 @@ class UserTable extends React.Component {
                 actions: {
                     '编辑': function (rowData, actions) {
                         me.showEditDialog(rowData);
+                    },
+                    '删除': function (rowData) {
+                        me.selected = [rowData];
+                        me.showDialog('delShow');
                     }
                 }
             }
@@ -165,6 +203,14 @@ class UserTable extends React.Component {
                 '删除': function () {
                     me.showDialog('delShow');
                 }
+            },
+            beforeFetch: function (data, from) {
+                if (data.lastLoginAt) {
+                    data.lastLoginAtBegin = me.formatDate(data.lastLoginAt[0], 'yyyy-MM-DD');
+                    data.lastLoginAtEnd = me.formatDate(data.lastLoginAt[1], 'yyyy-MM-DD');
+                    delete data.lastLoginAt;
+                }
+                return data;
             },
             rowSelection: {
                 onSelect: function (record, selected, selectedRows) {
@@ -189,24 +235,41 @@ class UserTable extends React.Component {
         return (
             <div className="site-content-body">
                 <h2>用户管理</h2>
-                <Form ref="searchForm" className="searchForm">
+                <Form ref="searchForm" className="search-form">
                     <FormRow>
-                        <InputFormField jsxname="menuName" jsxshowLabel={false} jsxplaceholder="输入用户名进行查询"/>
-                        <OtherFormField className="searchButton">
+                        <InputFormField jsxname="userName" jsxshowLabel={false} jsxplaceholder="输入用户名进行查询"/>
+                        <OtherFormField className="search-container">
                             <Button onClick={me.handleSearch.bind(me)}>查询</Button>
+                            <div className="updown" onClick={me.handleSearchAdClick.bind(me)}>
+                                <a href="javascript:;">高级查询</a><i className={classnames({
+                                "kuma-icon": true,
+                                "kuma-icon-title-up": me.state.showAdSearch,
+                                "kuma-icon-title-down": !me.state.showAdSearch
+                            })}></i>
+                            </div>
+                        </OtherFormField>
+                    </FormRow>
+                </Form>
+                <Form ref="searchAdForm" className="search-form">
+                    <FormRow className={classnames({"hidden": !me.state.showAdSearch, "show": me.state.showAdSearch})}>
+                        <InputFormField jsxlabel="用户名" jsxname="userName"/>
+                        <DateFormField jsxlabel="登录时间" jsxname="lastLoginAt" autoMatchWidth={true} jsxtype="cascade" format={'yyyy-MM-DD'}/>
+                        <OtherFormField className="searchButton">
+                            <Button type="primary" onClick={me.handleAdSearch.bind(me)}>提交</Button>
+                            <Button type="secondary" onClick={me.handleResetClick.bind(me)}>重置</Button>
                         </OtherFormField>
                     </FormRow>
                 </Form>
                 <Table {...tableProps} ref="table"/>
-                <Dialog ref="editDialog" width={1000} visible={me.state.editShow} title="数据编辑"
+                <Dialog ref="editDialog" width={500} visible={me.state.editShow} title="数据编辑"
                         onOk={me.handleEditOk.bind(me)} onCancel={me.handleEditCancel.bind(me)}>
                     {form}
                 </Dialog>
-                <Dialog ref="newDialog" width={1000} visible={me.state.newShow} title="数据新增"
+                <Dialog ref="newDialog" width={500} visible={me.state.newShow} title="数据新增"
                         onOk={me.handleNewOk.bind(me)} onCancel={me.handleNewCancel.bind(me)}>
                     {form}
                 </Dialog>
-                <Dialog ref="delDialog" width={1000} visible={me.state.delShow} title="确认删除？"
+                <Dialog ref="delDialog" width={200} visible={me.state.delShow} title="确认删除？"
                         onOk={me.handleDeleteOk.bind(me)} onCancel={me.handleDeleteCancel.bind(me)}>
                 </Dialog>
             </div>
@@ -214,4 +277,5 @@ class UserTable extends React.Component {
     }
 
 }
+
 export default UserTable;

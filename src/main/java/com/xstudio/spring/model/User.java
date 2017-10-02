@@ -2,6 +2,8 @@ package com.xstudio.spring.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.xstudio.common.BaseModelObject;
+import com.xstudio.config.converter.DateTimeFormat;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -46,10 +48,10 @@ public class User extends BaseModelObject implements Serializable {
      */
     private String userPassword;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lastLoginAtBegin;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lastLoginAtEnd;
 
     /**
@@ -61,7 +63,7 @@ public class User extends BaseModelObject implements Serializable {
      *
      * @mbg.generated
      */
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lastLoginAt;
 
     /**
