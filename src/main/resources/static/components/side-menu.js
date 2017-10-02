@@ -1,6 +1,7 @@
 let Menu = require('uxcore-menu');
 let MenuTable = require('./menu-table');
 let UserTable = require('./user-table');
+let RoleTable = require('./role-table');
 let SubMenu = Menu.SubMenu;
 let MenuItem = Menu.Item;
 
@@ -31,13 +32,17 @@ class LeftSideMenu extends React.Component {
             current: e.key,
             openKeys: e.keyPath.slice(1)
         });
-        if(selectedMenu.data){
+        let body = document.getElementsByClassName('site-content')[0];
+        if (selectedMenu.data) {
             switch (selectedMenu.menuUrl) {
                 case '/menu/', '/menu':
-                    ReactDOM.render(<MenuTable/>, document.getElementsByClassName('site-content')[0]);
+                    ReactDOM.render(<MenuTable/>, body);
                     break;
                 case '/user/', '/user':
-                    ReactDOM.render(<UserTable/>, document.getElementsByClassName('site-content')[0]);
+                    ReactDOM.render(<UserTable/>, body);
+                    break;
+                case '/role/', '/role':
+                    ReactDOM.render(<RoleTable/>, body);
                     break;
             }
         }

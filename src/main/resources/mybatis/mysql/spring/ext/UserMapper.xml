@@ -5,9 +5,30 @@
         <id property="userId" column="user_id"/>
         <result property="password" column="user_password"/>
         <result property="username" column="user_name"/>
-        <association property="details" resultMap="BaseResultMap"/>
+        <association property="details" resultMap="UserContextMap"/>
+    </resultMap>
+
+    <resultMap id="UserContextMap" type="com.xstudio.spring.vo.UserContext" extends="BaseResultMap">
+        <collection property="roles" resultMap="com.xstudio.spring.mapper.RoleMapper.BaseResultMap" />
+        <collection property="menus" ofType="String" javaType="list">
+            <result column="menu_id" />
+        </collection>
     </resultMap>
     <select id="selectByUsername" resultMap="appUserDetailsMap">
-        SELECT * FROM `application_user` WHERE user_name = #{username}
+        SELECT
+            u.user_id,
+            u.user_name,
+            u.user_password,
+            r.role_id,
+            r.role_name,
+            rm.menu_id
+        FROM
+            application_user u
+            LEFT JOIN application_user_role ur ON ur.user_id = u.user_id
+            LEFT JOIN application_role r ON r.role_id = ur.role_id
+            LEFT JOIN application_role_menu rm ON rm.role_id = ur.role_id
+        WHERE
+            u.user_name = #{username}
     </select>
+
 </mapper>

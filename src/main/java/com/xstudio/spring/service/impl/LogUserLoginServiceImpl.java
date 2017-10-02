@@ -27,6 +27,11 @@ public class LogUserLoginServiceImpl extends BaseServiceImpl<LogUserLogin> imple
     }
 
     @Override
+    public void setKeyValue(LogUserLogin record, String keyValue) {
+        record.setLogLoginId(Long.valueOf(keyValue));
+    }
+
+    @Override
     public String getKeyValue(LogUserLogin record) {
         return Long.toString(record.getLogLoginId());
     }

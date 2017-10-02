@@ -67,4 +67,6 @@ public interface IBaseService<T extends BaseModelObject> {
      * @return 验证结果 msg.code == 0 时表示该字段可用
      */
     Msg<String> uniqueValid(T record);
+
+    void setKeyValue(T record, String keyValue);
 }

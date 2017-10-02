@@ -8,7 +8,7 @@ const Formatter = require('uxcore-formatter');
  * 讲解：从 Form 中取出 Form 的零件用以配置生成一个完整的 Form。
  * Form 的使用文档见：http://uxco.re/components/form/
  */
-let {FormRow, InputFormField, OtherFormField, DateFormField, Validators, ButtonGroupFormField, TableFormField} = Form;
+let {FormRow, InputFormField, OtherFormField, DateFormField, Validators, NumberInputFormField, SelectFormField } = Form;
 
 /*
  * 讲解：object-assign 是一个非常实用的用于对象拷贝和扩展的函数
@@ -128,11 +128,14 @@ class MenuTable extends React.Component {
         });
     }
 
-    showDialog(key) {
+    showDialog(key, data) {
         let me = this;
         let obj = {};
         obj[key] = !me.state[key];
         obj['editValues'] = {};
+        if (data) {
+            obj['editValues'] = {parentMenuId: data.menuId};
+        }
         me.setState(obj);
     }
 
@@ -178,12 +181,15 @@ class MenuTable extends React.Component {
             {dataKey: 'menuId', title: 'ID', width: 50, hidden: true},
             {dataKey: 'menuName', title: '菜单名称', width: 200, ordered: true},
             {dataKey: 'menuUrl', title: 'URL地址', width: 150, ordered: true},
-            {dataKey: 'menuPerm', title: '权限注解', ordered: true},
+            {dataKey: 'menuPerm', title: '权限注解', width: 200, ordered: true},
             {
-                dataKey: 'action', title: '操作', width: 100, type: 'action', rightFixed: true,
+                dataKey: 'action', title: '操作', width: 250, type: 'action', rightFixed: true,
                 actions: {
                     '编辑': function (rowData, actions) {
                         me.showEditDialog(rowData);
+                    },
+                    '新增子项': function (rowData, actions) {
+                        me.showDialog('newShow', rowData);
                     },
                     '删除': function (rowData) {
                         me.selected = [rowData];
@@ -226,17 +232,38 @@ class MenuTable extends React.Component {
 
         let form = <Form className="" jsxvalues={me.state.editValues} ref="editForm">
             <FormRow>
+                <InputFormField jsxname="parentMenuId" jsxshow={false}/>
                 <InputFormField jsxlabel="菜单名称" jsxname="menuName"
                                 jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
                 <InputFormField jsxname="menuId" jsxshow={false}/>
             </FormRow>
             <FormRow>
-                <InputFormField jsxlabel="URL地址" jsxname="menuUrl"
-                                jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
+                <InputFormField jsxlabel="URL地址" jsxname="menuUrl" />
             </FormRow>
             <FormRow>
                 <InputFormField jsxlabel="权限" jsxname="menuPerm"
                                 jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
+            </FormRow>
+            <FormRow>
+                <NumberInputFormField
+                    value={0}
+                    jsxname="orderNumber"
+                    jsxlabel="排序"
+                    fixedNum={4}
+                    jsxplaceholder="输入排序优先级"
+                    jsxtips="数字越大排序越靠后"
+                    jsxrules={[
+                        {validator: Validators.isNotEmpty, errMsg: "不能为空"},
+                        {validator: Validators.isNum, errMsg: "请输入数字"}
+                    ]}/>
+            </FormRow>
+            <FormRow>
+                <SelectFormField jsxname="type" jsxlabel="类型"
+                                 jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}
+                                 jsxdata={[
+                                     {value: 'link', text: '菜单'},
+                                     {value: 'button', text: '行为'},
+                                 ]}/>
             </FormRow>
         </Form>;
 

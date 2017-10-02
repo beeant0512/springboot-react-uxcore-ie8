@@ -35,4 +35,9 @@ public class SqlLogServiceImpl extends BaseServiceImpl<SqlLog> implements ISqlLo
     public void emptyKeyValue(SqlLog record) {
         record.setId(null);
     }
+
+    @Override
+    public void setKeyValue(SqlLog record, String keyValue) {
+        record.setId(Long.valueOf(keyValue));
+    }
 }

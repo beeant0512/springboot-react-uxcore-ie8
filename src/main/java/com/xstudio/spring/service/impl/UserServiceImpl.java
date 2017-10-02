@@ -5,9 +5,12 @@ import com.xstudio.common.BaseServiceImpl;
 import com.xstudio.common.IBaseDao;
 import com.xstudio.common.Msg;
 import com.xstudio.common.utils.IdWorker;
+import com.xstudio.spring.mapper.MenuMapper;
 import com.xstudio.spring.mapper.UserMapper;
 import com.xstudio.spring.model.User;
+import com.xstudio.spring.service.IMenuService;
 import com.xstudio.spring.service.IUserService;
+import com.xstudio.spring.vo.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -19,6 +22,9 @@ import java.util.Date;
 public class UserServiceImpl extends BaseServiceImpl<User> implements IUserService {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private IMenuService menuService;
 
     @Override
     public IBaseDao<User> getRepositoryDao() {
@@ -53,7 +59,12 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
 
     @Override
     public AppUserDetails selectByUsername(String username) {
-        return userMapper.selectByUsername(username);
+        AppUserDetails appUserDetails = userMapper.selectByUsername(username);
+        UserContext details = (UserContext) appUserDetails.getDetails();
+        if(!details.getRoles().isEmpty()){
+            details.setMenus(menuService.getPermissionMenusByRoles(details.getRoles()));
+        }
+        return appUserDetails;
     }
 
     public void updateLastLoginTime(Long userId) {
@@ -61,5 +72,10 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
         user.setUserId(userId);
         user.setLastLoginAt(new Date());
         updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public void setKeyValue(User record, String keyValue) {
+        record.setUserId(Long.valueOf(keyValue));
     }
 }
