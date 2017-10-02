@@ -19,8 +19,8 @@ require('fetch-ie8');
 // import ReactDOM from 'react-dom';
 
 require('./style/style.scss');
-require('uxcore/assets/blue.css');
 require('uxcore/assets/iconfont.css');
+require('uxcore/assets/blue.css');
 require('animate.css');
 
 const React = require('react');

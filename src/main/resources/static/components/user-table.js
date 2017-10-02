@@ -21,6 +21,8 @@ class UserTable extends React.Component {
         super(props);
         this.state = {
             value: {
+                num: 2,
+                action: 'link',
                 style: 'border',
                 size: 'small',
             },
@@ -28,6 +30,7 @@ class UserTable extends React.Component {
             fetchParams: {},
             editShow: false,
             newShow: false,
+            resetPasswordShow: false,
             delShow: false,
             editValues: null,
         }
@@ -70,6 +73,31 @@ class UserTable extends React.Component {
         let obj = {};
         obj[key] = !me.state[key];
         me.setState(obj);
+    }
+
+    handleResetPasswordOk() {
+        let me = this;
+        let data = me.refs.resetPwdForm.getValues();
+        if (data.pass) {
+            $.ajax({
+                url: ctp + '/user/resetpwd/' + me.state.editValues.userId,
+                method: 'put',
+                traditional: true,
+                data: data.values,
+                success: function (result) {
+                    if (result.success) {
+                        me.toggleShow('resetPasswordShow');
+                        me.refs.table.fetchData();
+                    }
+                }
+            })
+        }
+    }
+
+    handleResetPasswordCancel() {
+        let me = this;
+        me.refs.resetPwdForm.resetValues();
+        me.toggleShow('resetPasswordShow');
     }
 
     handleEditOk() {
@@ -135,18 +163,11 @@ class UserTable extends React.Component {
         me.refs.newForm.resetValues();
     }
 
-    showEditDialog(rowData) {
-        this.setState({
-            editShow: true,
-            editValues: rowData
-        });
-    }
-
-    showDialog(key) {
+    showDialog(key, editValues) {
         let me = this;
         let obj = {};
         obj[key] = !me.state[key];
-        obj['editValues'] = {};
+        obj['editValues'] = editValues || {};
         me.setState(obj);
     }
 
@@ -193,10 +214,16 @@ class UserTable extends React.Component {
             {dataKey: 'userName', title: '用户名', width: 200, ordered: true},
             {dataKey: 'lastLoginAt', title: '最后登录时间', width: 150, ordered: true},
             {
-                dataKey: 'action', title: '操作', width: 100, type: 'action',
+                dataKey: 'action', title: '操作', width: 200, type: 'action',
+                actionType: this.state.value.action,
+                collapseNum: this.state.value.num || 3, // 超过 3 个将开始折叠
                 actions: {
                     '编辑': function (rowData, actions) {
-                        me.showEditDialog(rowData);
+                        me.showDialog('editShow', rowData);
+                    },
+                    '重置密码': function (rowData) {
+                        me.selected = [rowData];
+                        me.showDialog('resetPasswordShow', rowData);
                     },
                     '删除': function (rowData) {
                         me.selected = [rowData];
@@ -277,7 +304,12 @@ class UserTable extends React.Component {
                                  jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
             </FormRow>
         </Form>;
-
+        let resetPwdForm = <Form className="" jsxvalues={me.state.editValues} ref="resetPwdForm">
+            <FormRow>
+                <InputFormField jsxlabel="新密码" jsxname="password" inputType={'password'}
+                                jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
+            </FormRow>
+        </Form>;
         let editForm = <Form className="" jsxvalues={me.state.editValues} ref="editForm">
             <FormRow>
                 <InputFormField jsxlabel="用户名" jsxname="userName"
@@ -287,7 +319,7 @@ class UserTable extends React.Component {
             <FormRow>
                 <SelectFormField jsxlabel="角色" jsxname="role"
                                  multiple
-                                 jsxfetchUrl={ctp + '/role/userRole/' + (me.state.editValues ? me.state.editValues.userId ? me.state.editValues.userId : 0 : 0)}
+                                 jsxfetchUrl={ctp + '/role/userRole/' + (me.state.editValues ? me.state.editValues.userId || 0 : 0)}
                                  onSelect={(...args) => {
                                      console.log(...args);
                                  }}
@@ -345,15 +377,19 @@ class UserTable extends React.Component {
                     </FormRow>
                 </Form>
                 <Table {...tableProps} ref="table"/>
-                <Dialog ref="editDialog" width={500} visible={me.state.editShow} title="数据编辑"
+                <Dialog ref="editDialog" width={500} visible={me.state.editShow} title="编辑用户"
                         onOk={me.handleEditOk.bind(me)} onCancel={me.handleEditCancel.bind(me)}>
                     {editForm}
                 </Dialog>
-                <Dialog ref="newDialog" width={500} visible={me.state.newShow} title="数据新增"
+                <Dialog ref="resetPasswordDialog" width={500} visible={me.state.resetPasswordShow} title="重置密码"
+                        onOk={me.handleResetPasswordOk.bind(me)} onCancel={me.handleResetPasswordCancel.bind(me)}>
+                    {resetPwdForm}
+                </Dialog>
+                <Dialog ref="newDialog" width={500} visible={me.state.newShow} title="新增用户"
                         onOk={me.handleNewOk.bind(me)} onCancel={me.handleNewCancel.bind(me)}>
                     {form}
                 </Dialog>
-                <Dialog ref="delDialog" width={200} visible={me.state.delShow} title="确认删除？"
+                <Dialog ref="delDialog" width={200} visible={me.state.delShow} title="确认删除用户？"
                         onOk={me.handleDeleteOk.bind(me)} onCancel={me.handleDeleteCancel.bind(me)}>
                 </Dialog>
             </div>

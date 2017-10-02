@@ -1,5 +1,6 @@
 package com.xstudio.config;
 
+import com.alibaba.fastjson.serializer.DateCodec;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,10 +29,11 @@ public class WebAppConfiguration extends WebMvcConfigurerAdapter {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
-        fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
+        fastJsonConfig.setSerializerFeatures(SerializerFeature.WriteDateUseDateFormat, SerializerFeature.PrettyFormat);
         // 默认所有的Long型都使用 ToStringSerializer
         SerializeConfig serializeConfig = new SerializeConfig();
         serializeConfig.put(Long.class, ToStringSerializer.instance);
+        serializeConfig.put(Date.class, DateCodec.instance);
         fastJsonConfig.setSerializeConfig(serializeConfig);
 
         // 处理中文乱码问题
@@ -39,6 +42,7 @@ public class WebAppConfiguration extends WebMvcConfigurerAdapter {
         // 在convert中添加配置信息.
         converter.setSupportedMediaTypes(fastMediaTypes);
         converter.setFastJsonConfig(fastJsonConfig);
+
 
         converters.add(converter);
     }

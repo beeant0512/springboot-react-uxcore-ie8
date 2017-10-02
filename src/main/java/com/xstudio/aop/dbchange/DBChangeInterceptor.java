@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author xiaobiao
@@ -37,7 +38,7 @@ import java.util.regex.Matcher;
         args = {MappedStatement.class, Object.class}
 )})
 public class DBChangeInterceptor implements Interceptor {
-
+    static Pattern updatePattern = Pattern.compile("update\\s{1,}\\`{0,1}(\\w*)\\`{0,1}\\s{0,1}[\\s\\w\\=\\'\\$\\.\\,\\-\\:]*update_by\\s{1,}\\=\\s{1,}\\`{0,1}(\\w*)\\`{0,1}[\\s\\w\\=\\'\\$\\.\\,\\-\\:\\;]*");
     static int MAPPED_STATEMENT_INDEX = 0;
     static int PARAMETER_INDEX = 1;
     private static Logger logger = LoggerFactory.getLogger(DBChangeInterceptor.class);
@@ -122,8 +123,13 @@ public class DBChangeInterceptor implements Interceptor {
         if (sql.trim().startsWith("update")) {
             SqlLog sqlLog = new SqlLog();
             sqlLog.setMethod("update");
-            // todo actorId serverInfo ...
+            // todo multi-sql serverInfo ...
+            Matcher matcher = updatePattern.matcher(sql);
             sqlLog.setActorId(0l);
+            if (matcher.find()) {
+                sqlLog.setTableName(matcher.group(1));
+                sqlLog.setActorId(Long.valueOf(matcher.group(2)));
+            }
             sqlLog.setStatment(sql);
             SqlLogServiceImpl sqlLogService = ContextUtil.getBean(SqlLogServiceImpl.class);
             sqlLogService.insertSelective(sqlLog);

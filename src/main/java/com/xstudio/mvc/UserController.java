@@ -8,6 +8,7 @@ import com.xstudio.spring.model.UserRole;
 import com.xstudio.spring.service.IUserRoleService;
 import com.xstudio.spring.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +49,12 @@ public class UserController extends BaseController<User> {
             updateUserRoles(request, updateResult);
         }
         return updateResult;
+    }
+
+    @RequestMapping("resetpwd/{userId}")
+    public Msg<String> resetpwd(String password, @PathVariable(name = "userId") Long userId){
+
+       return userService.resetUserPasswordByUserId(userId, password);
     }
 
     private void updateUserRoles(HttpServletRequest request, Msg<User> updateResult) {

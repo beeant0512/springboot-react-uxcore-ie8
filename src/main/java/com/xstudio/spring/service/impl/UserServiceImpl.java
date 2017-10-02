@@ -4,8 +4,8 @@ import com.xstudio.common.AppUserDetails;
 import com.xstudio.common.BaseServiceImpl;
 import com.xstudio.common.IBaseDao;
 import com.xstudio.common.Msg;
+import com.xstudio.common.enums.EnError;
 import com.xstudio.common.utils.IdWorker;
-import com.xstudio.spring.mapper.MenuMapper;
 import com.xstudio.spring.mapper.UserMapper;
 import com.xstudio.spring.model.User;
 import com.xstudio.spring.service.IMenuService;
@@ -40,7 +40,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
 
     @Override
     public void setUpdateInfo(User record) {
-        if(!StringUtils.isEmpty(record.getUserPassword())){
+        if (!StringUtils.isEmpty(record.getUserPassword())) {
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             record.setUserPassword(bCryptPasswordEncoder.encode(record.getUserPassword()));
         }
@@ -61,10 +61,26 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
     public AppUserDetails selectByUsername(String username) {
         AppUserDetails appUserDetails = userMapper.selectByUsername(username);
         UserContext details = (UserContext) appUserDetails.getDetails();
-        if(!details.getRoles().isEmpty()){
+        if (!details.getRoles().isEmpty()) {
             details.setMenus(menuService.getPermissionMenusByRoles(details.getRoles()));
         }
         return appUserDetails;
+    }
+
+    @Override
+    public Msg<String> resetUserPasswordByUserId(Long userId, String password) {
+        Msg<String> msg = new Msg<>();
+        User user = new User();
+        user.setUserId(userId);
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        user.setUserPassword(bCryptPasswordEncoder.encode(password));
+        Msg<User> updateResult = updateByPrimaryKeySelective(user);
+        if (!updateResult.getSuccess()) {
+            msg.setResult(EnError.UPDATE_NONE);
+            return msg;
+        }
+
+        return msg;
     }
 
     public void updateLastLoginTime(Long userId) {
