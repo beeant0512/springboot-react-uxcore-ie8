@@ -6,20 +6,20 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.config.dev.js --display-error-details",
+    "build-watch": "webpack --config webpack.config.dev.js --watch",
     "build-profile": "webpack --config webpack.config.dev.js -profile --json > stats.json",
     "build-noie": "webpack --config webpack.config.noie.dev.js --display-error-details",
     "release": "webpack --colors --display-error-details",
     "release-noie": "webpack --colors --config webpack.config.noie.js --display-error-details",
-    "build-watch": "webpack --config webpack.config.dev.js --progress --watch --display-error-details",
     "dev": "webpack-dev-server --devtool eval --progress --display-error-details  --content-base build"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "animate.css": "^3.5.2",
     "await": "^0.2.6",
     "react": "^0.14.8",
     "react-dom": "^0.14.8",
-    "superagent": "^3.5.2",
     "uxcore": "^0.15.2"
   },
   "devDependencies": {

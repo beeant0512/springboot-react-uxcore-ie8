@@ -45,8 +45,47 @@ html, body {
 }
 
 .site-content {
-  .site-content-body{
+  .site-content-body {
     padding: 10px 15px;
+  }
+}
+
+.search-form {
+  .kuma-button {
+    line-height: 36px;
+    height: 36px;
+    margin-right: 10px;
+  }
+  .updown {
+    height: 36px;
+    padding-top: 5px;
+  }
+}
+
+.show {
+  -webkit-animation: fadeIn .2s ease-in-out;
+  animation: fadeIn .2s ease-in-out;
+}
+
+.hidden {
+  display: none;
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.3;
   }
 }
 

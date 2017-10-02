@@ -41,7 +41,9 @@ public class MenuController extends BaseController<Menu> {
     @ResponseBody
     public TableResponse<MenuVo> treeTable(Menu menu, TablePageBounds tablePageBounds){
         Msg<PageList<MenuVo>> pageListMsg = menuService.fuzzySearchVoByPager(menu, tablePageBounds.getPageBounds());
-        pageListMsg.getData().get(0).setData(new ArrayList<>());
+        if(pageListMsg.getSuccess() && null != pageListMsg.getData().get(0)){
+            pageListMsg.getData().get(0).setData(new ArrayList<>());
+        }
         return new TableResponse<>(pageListMsg);
     }
 }

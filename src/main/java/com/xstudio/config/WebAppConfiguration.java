@@ -1,25 +1,22 @@
 package com.xstudio.config;
 
+import com.alibaba.fastjson.serializer.CalendarCodec;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import com.xstudio.config.converter.StringToDateConverter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * WebMVC 配置
@@ -28,7 +25,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Configuration
 public class WebAppConfiguration extends WebMvcConfigurerAdapter {
-
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
@@ -47,6 +43,13 @@ public class WebAppConfiguration extends WebMvcConfigurerAdapter {
         converter.setFastJsonConfig(fastJsonConfig);
 
         converters.add(converter);
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        super.addFormatters(registry);
+        // 自定义日期转换器， 支持 带时间和不带时间的日期格式
+        registry.addFormatterForFieldAnnotation(new StringToDateConverter());
     }
 
     @Override

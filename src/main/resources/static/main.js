@@ -21,7 +21,7 @@ require('fetch-ie8');
 require('./style/style.scss');
 require('uxcore/assets/blue.css');
 require('uxcore/assets/iconfont.css');
-
+require('animate.css');
 
 const React = require('react');
 const ReactDOM = require('react-dom');

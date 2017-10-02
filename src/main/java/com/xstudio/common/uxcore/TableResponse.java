@@ -31,12 +31,16 @@ public class TableResponse<T> implements Serializable {
         PageContent<T> pageContent = new PageContent<>();
         PageList<T> data = msg.getData();
         pageContent.setData(data);
-        pageContent.setTotalCount(data.size());
+        pageContent.setTotalCount(0);
         pageContent.setCurrentPage(1);
-        if (data.getPaginator() != null) {
-            pageContent.setTotalCount(data.getPaginator().getTotalCount());
-            pageContent.setCurrentPage(data.getPaginator().getPage());
+        if(null != data){
+            pageContent.setTotalCount(data.size());
+            if (data.getPaginator() != null) {
+                pageContent.setTotalCount(data.getPaginator().getTotalCount());
+                pageContent.setCurrentPage(data.getPaginator().getPage());
+            }
         }
+
         this.content = pageContent;
     }
 

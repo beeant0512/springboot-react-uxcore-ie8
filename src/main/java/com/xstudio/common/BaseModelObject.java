@@ -1,6 +1,7 @@
 package com.xstudio.common;
 
-import com.alibaba.fastjson.annotation.JSONField;
+
+import com.xstudio.config.converter.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,26 +13,26 @@ import java.util.Date;
 public class BaseModelObject implements Serializable {
 
     private static final long serialVersionUID = 935758400379221981L;
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
     private Date createAt;
 
     private Long createBy;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
     private Date updateAt;
 
     private Long updateBy;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
     private Date createAtBegin;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
     private Date createAtEnd;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
     private Date updateAtBegin;
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.S")
     private Date updateAtEnd;
 
     public Date getCreateAt() {
