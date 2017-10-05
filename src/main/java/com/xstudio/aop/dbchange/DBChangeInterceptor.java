@@ -38,7 +38,10 @@ import java.util.regex.Pattern;
         args = {MappedStatement.class, Object.class}
 )})
 public class DBChangeInterceptor implements Interceptor {
-    static Pattern updatePattern = Pattern.compile("update\\s{1,}\\`{0,1}(\\w*)\\`{0,1}\\s{0,1}[\\s\\w\\=\\'\\$\\.\\,\\-\\:]*update_by\\s{1,}\\=\\s{1,}\\`{0,1}(\\w*)\\`{0,1}[\\s\\w\\=\\'\\$\\.\\,\\-\\:\\;]*");
+    static Pattern updatePattern = Pattern.compile("update\\s+\\`{0,1}(\\w*)\\`{0,1}\\s+[\\w\\W]*\\s+update_by\\s*\\=\\s*\\`{0,1}(\\w*)\\`{0,1}[\\s\\w\\W]*");
+    static Pattern insertSetPattern = Pattern.compile("insert\\s+into\\s+\\`{0,1}(\\w*)\\`{0,1}\\s+[\\w\\W]*\\s+create_by\\s*\\=\\s*\\`{0,1}(\\w*)\\`{0,1}[\\s\\w\\W]*");
+    static Pattern insertValuesPattern = Pattern.compile("insert\\s+into\\s+\\`{0,1}(\\w*)\\`{0,1}\\s*\\(([\\w\\W\\s]*)\\)\\s*values\\s*\\(([\\w\\W\\s]*)\\)");
+    static Pattern deletePattern = Pattern.compile("delete\\s+from\\s+\\`{0,1}(\\w*)\\`{0,1}");
     static int MAPPED_STATEMENT_INDEX = 0;
     static int PARAMETER_INDEX = 1;
     private static Logger logger = LoggerFactory.getLogger(DBChangeInterceptor.class);
@@ -120,20 +123,47 @@ public class DBChangeInterceptor implements Interceptor {
         //记录SQL
         String sql = showSql(configuration, boundSql);
         logger.info(sql);
+        SqlLog sqlLog = new SqlLog();
+        sqlLog.setActorId(0l);
+        // todo multi-sql serverInfo ...
+
         if (sql.trim().startsWith("update")) {
-            SqlLog sqlLog = new SqlLog();
             sqlLog.setMethod("update");
-            // todo multi-sql serverInfo ...
             Matcher matcher = updatePattern.matcher(sql);
-            sqlLog.setActorId(0l);
             if (matcher.find()) {
                 sqlLog.setTableName(matcher.group(1));
                 sqlLog.setActorId(Long.valueOf(matcher.group(2)));
             }
-            sqlLog.setStatment(sql);
-            SqlLogServiceImpl sqlLogService = ContextUtil.getBean(SqlLogServiceImpl.class);
-            sqlLogService.insertSelective(sqlLog);
+        } else if (sql.trim().startsWith("insert")) {
+            sqlLog.setMethod("create");
+            Matcher matcher = insertSetPattern.matcher(sql);
+            if (matcher.find()) {
+                sqlLog.setTableName(matcher.group(1));
+                sqlLog.setActorId(Long.valueOf(matcher.group(2)));
+            } else {
+                matcher = insertValuesPattern.matcher(sql);
+                if (matcher.find()) {
+                    sqlLog.setTableName(matcher.group(1));
+                    String[] columns = matcher.group(2).split(",");
+                    String[] values = matcher.group(3).split(",");
+                    for (int i = 0; i < columns.length; i++) {
+                        if ("create_by".equalsIgnoreCase(columns[i].trim())) {
+                            sqlLog.setActorId(Long.valueOf(values[i].trim()));
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            sqlLog.setMethod("delete");
+            Matcher matcher = deletePattern.matcher(sql);
+            if (matcher.find()) {
+                sqlLog.setTableName(matcher.group(1));
+            }
         }
+        sqlLog.setStatment(sql);
+        SqlLogServiceImpl sqlLogService = ContextUtil.getBean(SqlLogServiceImpl.class);
+        sqlLogService.insertSelective(sqlLog);
     }
 
     @Override
