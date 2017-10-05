@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xstudio.spring.mapper.RoleMapper">
+    <delete id="removeMembers">
+        <foreach collection="userId" item="id" separator=";">
+            DELETE FROM application_user_role WHERE role_id = #{roleId} AND user_id = #{id}
+        </foreach>
+    </delete>
 
     <select id="getRoleMembersByRoleId" resultMap="com.xstudio.spring.mapper.UserMapper.BaseResultMap">
-        SELECT user_id, user_name FROM application_user WHERE user_id IN (SELECT user_id FROM application_user_role WHERE role_id = #{roleId})
+        SELECT user_id, user_name FROM application_user
+        <where>
+            user_id IN (SELECT user_id FROM application_user_role WHERE role_id = #{roleId})
+        </where>
     </select>
     <select id="getUserRoleSelectedByUserId" resultMap="BaseResultMap">
-        SELECT * FROM application_role WHERE role_id IN (SELECT role_id FROM application_user_role WHERE user_id = #{userId})
+        SELECT * FROM application_role WHERE role_id IN (SELECT role_id FROM application_user_role WHERE user_id =
+        #{userId})
     </select>
     <select id="getUserRoleUnselectedByUserId" resultMap="BaseResultMap">
-         SELECT * FROM application_role WHERE role_id NOT IN (SELECT role_id FROM application_user_role WHERE user_id = #{userId})
+        SELECT * FROM application_role WHERE role_id NOT IN (SELECT role_id FROM application_user_role WHERE user_id =
+        #{userId})
     </select>
 </mapper>

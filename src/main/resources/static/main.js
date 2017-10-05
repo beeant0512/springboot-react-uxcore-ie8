@@ -32,5 +32,27 @@ let leftSideWidth = 190;
 let MainLayout = require('./components/layout');
 let LeftSideMenu = require('./components/side-menu');
 
-ReactDOM.render(<MainLayout/>, document.getElementById('main-body'));
+const Dropdown = require('uxcore-dropdown');
+const Menu = require('uxcore-menu');
+const Button = require('uxcore-button');
+
+let menu = <Menu>
+    <Menu.Item>
+        <a href="http://www.alipay.com/">详情</a>
+    </Menu.Item>
+    <Menu.Item>
+        <a  href="http://www.taobao.com/">修改密码</a>
+    </Menu.Item>
+    <Menu.Item>
+        <a href={ctp + "/logout"}>注销</a>
+    </Menu.Item>
+</Menu>;
+
+ReactDOM.render(
+    <Dropdown overlay={menu}>
+        <Button>{userName}</Button>
+    </Dropdown>,
+    document.getElementsByClassName('top-user-info')[0]
+);
+ReactDOM.render(<MainLayout />, document.getElementById('main-body'));
 ReactDOM.render(<LeftSideMenu url={ctp + '/menu/tree'} text={'menuName'} id={'menuId'}/>, document.getElementsByClassName('left-side-menu')[0]);

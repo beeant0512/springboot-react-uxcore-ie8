@@ -3,6 +3,7 @@ let Button = require('uxcore-button');
 let Form = require('uxcore-form');
 let Dialog = require('uxcore-dialog');
 let classnames = require("classnames");
+let DeleteDialog = require("./delete-dialog");
 const Formatter = require('uxcore-formatter');
 /*
  * 讲解：从 Form 中取出 Form 的零件用以配置生成一个完整的 Form。
@@ -10,10 +11,6 @@ const Formatter = require('uxcore-formatter');
  */
 let {FormRow, InputFormField, OtherFormField, DateFormField, Validators, NumberInputFormField, SelectFormField} = Form;
 
-/*
- * 讲解：object-assign 是一个非常实用的用于对象拷贝和扩展的函数
- * 详细说明见 https://www.npmjs.com/package/object-assign
- */
 
 class RoleTable extends React.Component {
     constructor(props) {
@@ -27,7 +24,9 @@ class RoleTable extends React.Component {
             fetchParams: {},
             editShow: false,
             newShow: false,
-            delShow: false,
+            memberShow: false,
+            delMemberShow: false,
+            deleteRoleUser: null,
             editValues: null,
         }
     }
@@ -135,54 +134,67 @@ class RoleTable extends React.Component {
         me.setState(obj);
     }
 
+    formatDate(value, format) {
+        if (isNaN(value) || value === null) {
+            return value;
+        }
+        return Formatter.date(value, format);
+    }
+
+    showDeleteUserDialog(rowData) {
+        let me = this;
+        me.setState({
+            delMemberShow: true,
+            deleteRoleUser: rowData
+        });
+    }
+
     showMemberDialog(rowData) {
         let me = this;
-        $.ajax({
-            url: ctp + '/role/members/' + rowData.roleId,
-            method: 'get',
-            async: false,
-            success: function (members) {
-                me.setState({
-                    memberShow: true,
-                    members: members
-                });
-            }
+        me.setState({
+            memberShow: true,
+            editValues: rowData
+        });
+    }
+
+    handleHideMemberDialog() {
+        let me = this;
+        me.setState({
+            memberShow: false,
+            editValues: null
+        });
+    }
+
+    handleMemberDeleteCancel(){
+        let me = this;
+        me.setState({
+            delMemberShow: false
         })
     }
 
-    handleDeleteOk() {
+    handleMemberDeleteOk() {
         let me = this;
-        let selectedItems = me.selected;
+        let selectedItems = me.state.deleteRoleUser || [];
         let keys = [];
         selectedItems.forEach(function (value, index, array) {
-            keys.push(value.roleId);
+            keys.push(value.userId);
         });
         $.ajax({
-            url: ctp + "/role/delete",
+            url: ctp + "/role/members/" + me.state.editValues.roleId,
             method: 'post',
             traditional: true,
             data: {id: keys},
             success: function (res) {
                 if (res.success) {
                     selectedItems.forEach(function (value) {
-                        me.refs.table.delRow(value);
+                        me.refs.memberTable.delRow(value);
                     });
-                    me.toggleShow('delShow');
+                    me.setState({
+                        delMemberShow: false
+                    })
                 }
             }
         })
-    }
-
-    handleDeleteCancel() {
-        let me = this;
-        me.toggleShow('delShow');
-    }
-
-    formatDate(value, format) {
-        if (isNaN(value) || value === null) {
-            return value;
-        }
-        return Formatter.date(value, format);
     }
 
     render() {
@@ -202,8 +214,7 @@ class RoleTable extends React.Component {
                         me.showMemberDialog(rowData);
                     },
                     '删除': function (rowData) {
-                        me.selected = [rowData];
-                        me.showDialog('delShow');
+                        me.refs.deleteDialog.show([rowData]);
                     }
                 }
             }
@@ -219,7 +230,7 @@ class RoleTable extends React.Component {
                     me.showDialog('newShow');
                 },
                 '删除': function () {
-                    me.showDialog('delShow');
+                    me.refs.deleteDialog.show();
                 }
             },
             beforeFetch: function (data, from) {
@@ -250,6 +261,40 @@ class RoleTable extends React.Component {
                 <InputFormField jsxlabel="角色编码" jsxname="roleKey"/>
             </FormRow>
         </Form>;
+
+        let memberTableProps = {
+            fetchUrl: ctp + "/role/members/" + (me.state.editValues ? me.state.editValues.roleId : 0),
+            jsxcolumns: [
+                {dataKey: 'userId', title: 'ID', width: 50, hidden: true},
+                {dataKey: 'userName', title: '用户名', width: 200, ordered: true},
+                {dataKey: 'lastLoginAt', title: '最后登录时间', width: 150, ordered: true},
+                {
+                    dataKey: 'action', title: '操作', width: 200, type: 'action',
+                    actionType: this.state.value.action,
+                    collapseNum: this.state.value.num || 3, // 超过 3 个将开始折叠
+                    actions: {
+                        '删除': function (rowData) {
+                            me.showDeleteUserDialog([rowData]);
+                        }
+                    }
+                }
+            ],
+            fetchParams: me.state.fetchParams,
+            actionBar: {
+                '删除': function () {
+                    me.showDeleteUserDialog(me.selectedUser);
+                }
+            },
+            rowSelection: {
+                onSelect: function (record, selected, selectedRows) {
+                    me.selectedUser = selectedRows;
+                },
+                onSelectAll: function (selected, selectedRows) {
+                    me.selectedUser = selectedRows;
+                }
+            }
+        };
+        let memberTable = <Table {...memberTableProps} ref="memberTable"/>;
 
         return (
             <div className="site-content-body">
@@ -284,16 +329,27 @@ class RoleTable extends React.Component {
                     </FormRow>
                 </Form>
                 <Table {...tableProps} ref="table"/>
-                <Dialog ref="editDialog" width={500} visible={me.state.editShow} title="数据编辑"
+                <Dialog ref="editDialog" width={500} visible={me.state.editShow} title="角色编辑"
                         onOk={me.handleEditOk.bind(me)} onCancel={me.handleEditCancel.bind(me)}>
                     {form}
                 </Dialog>
-                <Dialog ref="newDialog" width={500} visible={me.state.newShow} title="数据新增"
+                <Dialog ref="memberDialog" width={500} visible={me.state.memberShow} title="成员管理"
+                        onOk={me.handleHideMemberDialog.bind(me)} onCancel={me.handleHideMemberDialog.bind(me)}>
+                    {memberTable}
+                </Dialog>
+                <Dialog ref="newDialog" width={500} visible={me.state.newShow} title="角色新增"
                         onOk={me.handleNewOk.bind(me)} onCancel={me.handleNewCancel.bind(me)}>
                     {form}
                 </Dialog>
-                <Dialog ref="delDialog" width={200} visible={me.state.delShow} title="确认删除？"
-                        onOk={me.handleDeleteOk.bind(me)} onCancel={me.handleDeleteCancel.bind(me)}>
+                <DeleteDialog ref="deleteDialog" {... {
+                    url: "/role/delete",
+                    id: 'roleId',
+                    text: 'roleName',
+                    table: me,
+                    tableName: 'table'
+                }} />
+                <Dialog ref="delMemberDialog" width={200} visible={me.state.delMemberShow} title="确认删除？"
+                        onOk={me.handleMemberDeleteOk.bind(me)} onCancel={me.handleMemberDeleteCancel.bind(me)}>
                 </Dialog>
             </div>
         )

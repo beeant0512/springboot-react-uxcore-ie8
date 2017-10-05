@@ -7,7 +7,9 @@ import com.xstudio.common.Msg;
 import com.xstudio.common.enums.EnError;
 import com.xstudio.common.utils.IdWorker;
 import com.xstudio.spring.mapper.UserMapper;
+import com.xstudio.spring.mapper.UserRoleMapper;
 import com.xstudio.spring.model.User;
+import com.xstudio.spring.model.UserRole;
 import com.xstudio.spring.service.IMenuService;
 import com.xstudio.spring.service.IUserService;
 import com.xstudio.spring.vo.UserContext;
@@ -25,6 +27,9 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
 
     @Autowired
     private IMenuService menuService;
+
+    @Autowired
+    private UserRoleMapper userRoleMapper;
 
     @Override
     public IBaseDao<User> getRepositoryDao() {
@@ -93,5 +98,23 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
     @Override
     public void setKeyValue(User record, String keyValue) {
         record.setUserId(Long.valueOf(keyValue));
+    }
+
+    @Override
+    public Msg<Boolean> deleteByPrimaryKey(String keys) {
+        UserRole userRole = new UserRole();
+        userRole.setUserId(Long.valueOf(keys));
+        userRoleMapper.deleteByExample(userRole);
+        return super.deleteByPrimaryKey(keys);
+    }
+
+    @Override
+    public Msg<Integer> batchDeleteByPrimaryKey(String[] keys) {
+        UserRole userRole = new UserRole();
+        for (String key : keys) {
+            userRole.setUserId(Long.valueOf(key));
+            userRoleMapper.deleteByExample(userRole);
+        }
+        return super.batchDeleteByPrimaryKey(keys);
     }
 }

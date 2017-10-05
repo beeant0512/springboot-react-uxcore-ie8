@@ -126,8 +126,9 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu> implements IMenuServi
     @Override
     public List<MenuVo> getPermissionMenusByRoles(List<Role> roles) {
         List<MenuVo> list = new ArrayList<>();
-        List<String> fullpaths = menuMapper.getMenuFullpathByRoles(roles);
-        List<Menu> menus = menuMapper.getPermissionMenusByRoles(roles);
+        // todo permission menus
+//        List<String> fullpaths = menuMapper.getMenuFullpathByRoles(roles);
+//        List<Menu> menus = menuMapper.getPermissionMenusByRoles(roles);
 
         return list;
     }

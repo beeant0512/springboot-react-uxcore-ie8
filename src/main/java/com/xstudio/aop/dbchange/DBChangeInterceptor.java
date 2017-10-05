@@ -70,7 +70,7 @@ public class DBChangeInterceptor implements Interceptor {
                         sql = sql.replaceFirst("\\?", Matcher.quoteReplacement(getParameterValue(obj)));
                     } else {
                         sql = sql.replaceFirst("\\?", "缺失");
-                    }//打印出缺失，提醒该参数缺失并防止错位
+                    } //打印出缺失，提醒该参数缺失并防止错位
                 }
             }
         }
@@ -134,32 +134,14 @@ public class DBChangeInterceptor implements Interceptor {
                 sqlLog.setTableName(matcher.group(1));
                 sqlLog.setActorId(Long.valueOf(matcher.group(2)));
             }
-        } else if (sql.trim().startsWith("insert")) {
-            sqlLog.setMethod("create");
-            Matcher matcher = insertSetPattern.matcher(sql);
-            if (matcher.find()) {
-                sqlLog.setTableName(matcher.group(1));
-                sqlLog.setActorId(Long.valueOf(matcher.group(2)));
-            } else {
-                matcher = insertValuesPattern.matcher(sql);
-                if (matcher.find()) {
-                    sqlLog.setTableName(matcher.group(1));
-                    String[] columns = matcher.group(2).split(",");
-                    String[] values = matcher.group(3).split(",");
-                    for (int i = 0; i < columns.length; i++) {
-                        if ("create_by".equalsIgnoreCase(columns[i].trim())) {
-                            sqlLog.setActorId(Long.valueOf(values[i].trim()));
-                            break;
-                        }
-                    }
-                }
-            }
-        } else {
+        } else if (sql.trim().startsWith("delete")) {
             sqlLog.setMethod("delete");
             Matcher matcher = deletePattern.matcher(sql);
             if (matcher.find()) {
                 sqlLog.setTableName(matcher.group(1));
             }
+        } else {
+            return;
         }
         sqlLog.setStatment(sql);
         SqlLogServiceImpl sqlLogService = ContextUtil.getBean(SqlLogServiceImpl.class);

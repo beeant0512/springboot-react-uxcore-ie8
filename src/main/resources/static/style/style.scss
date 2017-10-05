@@ -1,7 +1,16 @@
 $leftSideMenuWidth: 190px;
-
+$topHeight: 50px;
 html, body {
   min-height: 100%;
+}
+
+.top-user-info {
+  padding-right: 5px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: $topHeight;
+  line-height: $topHeight;
 }
 
 .site-nav {
@@ -9,7 +18,7 @@ html, body {
   left: 0;
   top: 0;
   width: 100%;
-  height: 50px;
+  height: $topHeight;
   background-color: #288df0;
   transition: background-color ease-out .5s;
   z-index: 99;

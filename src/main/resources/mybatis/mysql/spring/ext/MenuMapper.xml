@@ -6,16 +6,18 @@
         SELECT * FROM application_menu
         <where>
             <foreach collection="list" separator="or" item="item">
-              full_path LIKE concat(#{item},"_%")
+                full_path LIKE concat(#{item},"_%")
             </foreach>
         </where>
     </select>
     <select id="getMenuFullpathByRoles" resultType="java.lang.String">
         SELECT full_path FROM application_menu
         <where>
-            <foreach collection="roles" item="item" separator="or">
-                menu_id = #{item.menuId}
+            menu_id in (SELECT menu_id FROM application_role_menu WHERE role_id IN
+            <foreach collection="list" item="item" separator="," open="(" close=")">
+                #{item.roleId}
             </foreach>
+            )
         </where>
     </select>
 </mapper>

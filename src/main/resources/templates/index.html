@@ -21,11 +21,15 @@
             <li><a th:href="@{/}">菜单四</a></li>
         </ul>
     </nav>
+    <div class="top-user-info">
+
+    </div>
     <div id="main-body"></div>
 
 <script th:inline="javascript">
    var csrf = '',
-       ctp = [[${#httpServletRequest.getContextPath()}]];
+       ctp = [[${#httpServletRequest.getContextPath()}]],
+       userName = [[${#httpServletRequest.remoteUser}]];
 </script>
 
 <script th:src="@{/static/lib/react/react.js}"></script>

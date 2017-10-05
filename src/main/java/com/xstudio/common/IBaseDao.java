@@ -51,5 +51,5 @@ public interface IBaseDao<T> {
 
     T fuzzySearch(T record);
 
-    PageList<T> fuzzySearchByPager(@Param("item") T record, @Param("pageBounds") PageBounds pageBounds);
+    PageList<T> fuzzySearchByPager(@Param("example") T record, @Param("pageBounds") PageBounds pageBounds);
 }

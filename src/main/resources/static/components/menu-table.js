@@ -3,18 +3,14 @@ let Button = require('uxcore-button');
 let Form = require('uxcore-form');
 let Dialog = require('uxcore-dialog');
 let classnames = require("classnames");
+let DeleteDialog = require("./delete-dialog");
 const Formatter = require('uxcore-formatter');
 /*
  * 讲解：从 Form 中取出 Form 的零件用以配置生成一个完整的 Form。
  * Form 的使用文档见：http://uxco.re/components/form/
  */
-let {FormRow, InputFormField, OtherFormField, DateFormField, Validators, NumberInputFormField, SelectFormField } = Form;
+let {FormRow, InputFormField, OtherFormField, DateFormField, Validators, NumberInputFormField, SelectFormField} = Form;
 
-/*
- * 讲解：object-assign 是一个非常实用的用于对象拷贝和扩展的函数
- * 详细说明见 https://www.npmjs.com/package/object-assign
- */
-let assign = require('object-assign');
 
 class MenuTable extends React.Component {
     constructor(props) {
@@ -139,34 +135,6 @@ class MenuTable extends React.Component {
         me.setState(obj);
     }
 
-    handleDeleteOk() {
-        let me = this;
-        let selectedItems = me.selected;
-        let keys = [];
-        selectedItems.forEach(function (value, index, array) {
-            keys.push(value.menuId);
-        });
-        $.ajax({
-            url: ctp + "/menu/delete",
-            method: 'post',
-            traditional: true,
-            data: {id: keys},
-            success: function (res) {
-                if (res.success) {
-                    selectedItems.forEach(function (value) {
-                        me.refs.table.delRow(value);
-                    });
-                    me.toggleShow('delShow');
-                }
-            }
-        })
-    }
-
-    handleDeleteCancel() {
-        let me = this;
-        me.toggleShow('delShow');
-    }
-
     formatDate(value, format) {
         if (isNaN(value) || value === null) {
             return value;
@@ -192,8 +160,7 @@ class MenuTable extends React.Component {
                         me.showDialog('newShow', rowData);
                     },
                     '删除': function (rowData) {
-                        me.selected = [rowData];
-                        me.showDialog('delShow');
+                        me.refs.deleteDialog.show([rowData]);
                     }
                 }
             }
@@ -209,7 +176,7 @@ class MenuTable extends React.Component {
                     me.showDialog('newShow');
                 },
                 '删除': function () {
-                    me.showDialog('delShow');
+                    me.refs.deleteDialog.show();
                 }
             },
             beforeFetch: function (data, from) {
@@ -238,7 +205,7 @@ class MenuTable extends React.Component {
                 <InputFormField jsxname="menuId" jsxshow={false}/>
             </FormRow>
             <FormRow>
-                <InputFormField jsxlabel="URL地址" jsxname="menuUrl" />
+                <InputFormField jsxlabel="URL地址" jsxname="menuUrl"/>
             </FormRow>
             <FormRow>
                 <InputFormField jsxlabel="权限" jsxname="menuPerm"
@@ -308,9 +275,13 @@ class MenuTable extends React.Component {
                         onOk={me.handleNewOk.bind(me)} onCancel={me.handleNewCancel.bind(me)}>
                     {form}
                 </Dialog>
-                <Dialog ref="delDialog" width={200} visible={me.state.delShow} title="确认删除？"
-                        onOk={me.handleDeleteOk.bind(me)} onCancel={me.handleDeleteCancel.bind(me)}>
-                </Dialog>
+                <DeleteDialog ref="deleteDialog" {... {
+                    url: "/menu/delete",
+                    id: 'menuId',
+                    text: 'menuName',
+                    table: me,
+                    tableName: 'table'
+                }} />
             </div>
         )
     }
