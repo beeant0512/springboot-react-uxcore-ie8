@@ -95,6 +95,15 @@ html, body {
   }
 }
 
+
+//overwrite kuma style
+.kuma-dlg-title{
+  margin: 0;
+  padding-top: 10px;
+  background-color: #288df0;
+  padding-bottom: 10px;
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;

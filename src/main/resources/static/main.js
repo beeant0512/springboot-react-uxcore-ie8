@@ -22,7 +22,7 @@ require('./style/style.scss');
 require('uxcore/assets/iconfont.css');
 require('uxcore/assets/blue.css');
 require('animate.css');
-
+import NattyFetch from 'natty-fetch/dist/natty-fetch.pc';
 const React = require('react');
 const ReactDOM = require('react-dom');
 /*
@@ -35,7 +35,16 @@ let LeftSideMenu = require('./components/side-menu');
 const Dropdown = require('uxcore-dropdown');
 const Menu = require('uxcore-menu');
 const Button = require('uxcore-button');
-
+console.log(NattyFetch.getGlobal());
+NattyFetch.setGlobal({
+    header: {
+      xxxx: 'yyyyyy'
+    },
+    data: {
+        __token: 'project_token_string'
+    }
+});
+console.log(NattyFetch.getGlobal());
 function addCententPath(url) {
     if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
         return url;
