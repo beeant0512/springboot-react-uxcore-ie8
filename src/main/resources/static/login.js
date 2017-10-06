@@ -22,8 +22,42 @@ require('uxcore/assets/blue.css');
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-/*
- * self define components require field
- */
 
+function addCententPath(url) {
+    if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
+        return url;
+    }
+
+    let contentPath = ctp;
+    if (url.indexOf(contentPath) == 0) {
+        contentPath = '';
+    }
+
+    return contentPath + (url.indexOf("/") === 0 ? url : ('/' + url));
+}
+
+$.ajaxSetup({
+    global: true,
+    headers: {
+        'X-CSRF-TOKEN': csrf
+    },
+    beforeSend: function (xhr, req) {
+        req.url = addCententPath(req.url);
+        console.log(xhr, req);
+    },
+    error: function (request, textStatus, errorThrown) {
+        /* ajax 请求跳转 */
+        console.error(errorThrown, textStatus);
+    },
+    complete: function (XMLHttpRequest, textStatus) {
+        let redirect = XMLHttpRequest.getResponseHeader('redirect');
+        if (redirect) {
+            if (redirect.startsWith("http")) {
+                window.location = redirect;
+            } else {
+                window.location = ctp + redirect;
+            }
+        }
+    }
+});
 require('./components/login');

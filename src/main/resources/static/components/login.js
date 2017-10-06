@@ -32,10 +32,8 @@ class LoginForm extends React.Component {
         let _this = this;
         let formValues = this.form.getValues();
         if (formValues.pass) {
-            $.post({
-                headers: {
-                    'X-CSRF-TOKEN': csrf
-                },
+            $.ajax({
+                method: 'post',
                 url: _this.props.url,
                 data: formValues.values,
                 success: function (res) {
@@ -108,4 +106,4 @@ class LoginForm extends React.Component {
     }
 }
 
-ReactDOM.render(<LoginForm url={ctp + '/login'}/>, document.getElementById('login'));
+ReactDOM.render(<LoginForm url={ '/login'}/>, document.getElementById('login'));

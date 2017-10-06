@@ -36,12 +36,50 @@ const Dropdown = require('uxcore-dropdown');
 const Menu = require('uxcore-menu');
 const Button = require('uxcore-button');
 
+function addCententPath(url) {
+    if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
+        return url;
+    }
+
+    let contentPath = ctp;
+    if (url.indexOf(contentPath) == 0) {
+        contentPath = '';
+    }
+
+    return contentPath + (url.indexOf("/") === 0 ? url : ('/' + url));
+}
+
+$.ajaxSetup({
+    global: true,
+    headers: {
+        'X-CSRF-TOKEN': csrf
+    },
+    beforeSend: function (xhr, req) {
+        req.url = addCententPath(req.url);
+        console.log(xhr, req);
+    },
+    error: function (request, textStatus, errorThrown) {
+        /* ajax 请求跳转 */
+        console.error(errorThrown, textStatus);
+    },
+    complete: function (XMLHttpRequest, textStatus) {
+        let redirect = XMLHttpRequest.getResponseHeader('redirect');
+        if (redirect) {
+            if (redirect.startsWith("http")) {
+                window.location = redirect;
+            } else {
+                window.location = ctp + redirect;
+            }
+        }
+    }
+});
+
 let menu = <Menu>
     <Menu.Item>
         <a href="http://www.alipay.com/">详情</a>
     </Menu.Item>
     <Menu.Item>
-        <a  href="http://www.taobao.com/">修改密码</a>
+        <a href="http://www.taobao.com/">修改密码</a>
     </Menu.Item>
     <Menu.Item>
         <a href={ctp + "/logout"}>注销</a>
@@ -54,5 +92,6 @@ ReactDOM.render(
     </Dropdown>,
     document.getElementsByClassName('top-user-info')[0]
 );
-ReactDOM.render(<MainLayout />, document.getElementById('main-body'));
-ReactDOM.render(<LeftSideMenu url={ctp + '/menu/tree'} text={'menuName'} id={'menuId'}/>, document.getElementsByClassName('left-side-menu')[0]);
+ReactDOM.render(<MainLayout/>, document.getElementById('main-body'));
+ReactDOM.render(<LeftSideMenu url={ctp + '/menu/tree'} text={'menuName'}
+                              id={'menuId'}/>, document.getElementsByClassName('left-side-menu')[0]);
