@@ -11,6 +11,32 @@ const Formatter = require('uxcore-formatter');
  */
 let {FormRow, InputFormField, OtherFormField, DateFormField, Validators, SelectFormField, TableFormField} = Form;
 
+class UserEditForm extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let me = this;
+        return <Form className="" jsxvalues={me.props.value} ref="form">
+            <FormRow>
+                <InputFormField jsxlabel="用户名" jsxname="userName"
+                                jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
+                <InputFormField jsxname="userId" jsxshow={false}/>
+            </FormRow>
+            <FormRow>
+                <SelectFormField jsxlabel="角色" jsxname="role"
+                                 multiple
+                                 onSelect={(...args) => {
+                                     console.log(...args);
+                                 }}
+                                 allowClear
+                                 jsxdata={me.props.value.roleItems}
+                                 jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
+            </FormRow>
+        </Form>;
+    }
+}
 
 class UserTable extends React.Component {
     constructor(props) {
@@ -92,17 +118,16 @@ class UserTable extends React.Component {
 
     handleResetPasswordCancel() {
         let me = this;
-        me.refs.resetPwdForm.resetValues();
         me.toggleShow('resetPasswordShow');
     }
 
     handleEditOk() {
         let me = this;
-        let data = me.refs.editForm.getValues();
+        let data = me.refs.editUserForm.refs.form.getValues();
         if (data.pass) {
             let roles = [];
             data.values.role.forEach(function (value) {
-                roles.push(value.key);
+                roles.push(value);
             });
             delete data.values.role;
             data.values.roles = roles;
@@ -114,6 +139,7 @@ class UserTable extends React.Component {
                 success: function (result) {
                     if (result.success) {
                         me.toggleShow('editShow');
+                        me.refs.editUserForm.refs.form.resetValues();
                         me.refs.table.fetchData();
                     }
                 }
@@ -123,8 +149,8 @@ class UserTable extends React.Component {
 
     handleEditCancel() {
         let me = this;
-        me.refs.editForm.resetValues();
         me.toggleShow('editShow');
+        me.refs.editUserForm.refs.form.resetValues();
     }
 
     handleNewOk() {
@@ -187,7 +213,23 @@ class UserTable extends React.Component {
                 collapseNum: this.state.value.num || 3, // 超过 3 个将开始折叠
                 actions: {
                     '编辑': function (rowData, actions) {
-                        me.showDialog('editShow', rowData);
+                        $.ajax({
+                            url: ctp + '/role/userRole/' + rowData.userId,
+                            success: function (obj) {
+                                let selected = [], items = {};
+                                obj.selected.forEach((item) => {
+                                    // selected[item.roleId] = item.roleName;
+                                    selected.push(item.roleId);
+                                    items[item.roleId.toString()] = item.roleName;
+                                });
+                                obj.unselected.forEach((item) => {
+                                    items[item.roleId.toString()] = item.roleName;
+                                });
+                                rowData.role = selected;
+                                rowData.roleItems = items;
+                                me.showDialog('editShow', rowData);
+                            }
+                        });
                     },
                     '重置密码': function (rowData) {
                         me.selected = [rowData];
@@ -247,7 +289,6 @@ class UserTable extends React.Component {
                                  onSelect={(...args) => {
                                      console.log(...args);
                                  }}
-                                 defaultValue={me.state.selectedRole}
                                  beforeFetch={function (data) {
                                      console.log(data);
                                      if (data.q === undefined) {
@@ -257,15 +298,9 @@ class UserTable extends React.Component {
                                  }}
                                  afterFetch={(obj) => {
                                      let data = {};
-                                     let selected = {};
-                                     obj.selected.forEach((item) => {
-                                         selected[item.roleId] = item.roleName;
-                                         data[item.roleId] = item.roleName;
-                                     });
                                      obj.unselected.forEach((item) => {
                                          data[item.roleId] = item.roleName;
                                      });
-                                     me.setState({selectedRole: selected});
                                      return data;
                                  }}
                                  jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
@@ -275,43 +310,6 @@ class UserTable extends React.Component {
             <FormRow>
                 <InputFormField jsxlabel="新密码" jsxname="password" inputType={'password'}
                                 jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
-            </FormRow>
-        </Form>;
-        let editForm = <Form className="" jsxvalues={me.state.editValues} ref="editForm">
-            <FormRow>
-                <InputFormField jsxlabel="用户名" jsxname="userName"
-                                jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
-                <InputFormField jsxname="userId" jsxshow={false}/>
-            </FormRow>
-            <FormRow>
-                <SelectFormField jsxlabel="角色" jsxname="role"
-                                 multiple
-                                 jsxfetchUrl={ctp + '/role/userRole/' + (me.state.editValues ? me.state.editValues.userId || 0 : 0)}
-                                 onSelect={(...args) => {
-                                     console.log(...args);
-                                 }}
-                                 defaultValue={me.state.selectedRole}
-                                 beforeFetch={function (data) {
-                                     console.log(data);
-                                     if (data.q === undefined) {
-                                         data.q = 'a';
-                                     }
-                                     return data;
-                                 }}
-                                 afterFetch={(obj) => {
-                                     let data = {};
-                                     let selected = {};
-                                     obj.selected.forEach((item) => {
-                                         selected[item.roleId] = item.roleName;
-                                         data[item.roleId] = item.roleName;
-                                     });
-                                     obj.unselected.forEach((item) => {
-                                         data[item.roleId] = item.roleName;
-                                     });
-                                     me.setState({selectedRole: selected});
-                                     return data;
-                                 }}
-                                 jsxrules={{validator: Validators.isNotEmpty, errMsg: "非空"}}/>
             </FormRow>
         </Form>;
         return (
@@ -346,7 +344,7 @@ class UserTable extends React.Component {
                 <Table {...tableProps} ref="table"/>
                 <Dialog ref="editDialog" width={500} visible={me.state.editShow} title="编辑用户"
                         onOk={me.handleEditOk.bind(me)} onCancel={me.handleEditCancel.bind(me)}>
-                    {editForm}
+                    <UserEditForm value={me.state.editValues} ref="editUserForm"/>
                 </Dialog>
                 <Dialog ref="resetPasswordDialog" width={500} visible={me.state.resetPasswordShow} title="重置密码"
                         onOk={me.handleResetPasswordOk.bind(me)} onCancel={me.handleResetPasswordCancel.bind(me)}>
